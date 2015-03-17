@@ -12,7 +12,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
 
-public class Main_Activity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity {
 
     private GridView gridView;
 
