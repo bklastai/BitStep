@@ -24,7 +24,9 @@
             android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="3dp"
-            android:text="@string/button_playPause"/>
+            android:text="@string/button_playPause"
+            android:onClick="play"
+            android:id="@+id/play" />
         <Button
             android:layout_weight="1"
             android:layout_width="match_parent"

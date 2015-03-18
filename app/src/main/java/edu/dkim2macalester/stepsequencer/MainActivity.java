@@ -23,6 +23,7 @@ public class MainActivity extends ActionBarActivity {
     private GridView gridView;
     private SoundPool soundPool;
     private ArrayList<sound> mSounds = null;
+    private boolean [] binArray;
 
 
     @Override
@@ -34,6 +35,14 @@ public class MainActivity extends ActionBarActivity {
         //Set up the gridview
         gridView = (GridView) findViewById(R.id.gridview);
         gridView.setAdapter(new ButtonAdapter(this));
+
+        //set up the binary array
+        binArray = new boolean[256];
+        for (int i = 0; i<binArray.length;i++){
+            binArray[i]=false;
+        }
+
+        //set up the soundPool
         soundPool = new SoundPool(16, AudioManager.STREAM_MUSIC, 0);
         mSounds = new ArrayList<>();
 
@@ -45,15 +54,12 @@ public class MainActivity extends ActionBarActivity {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 v.setSelected(!v.isSelected());
-                sound s = mSounds.get((position-position%16)/16);
-                soundPool.play(s.getSoundResourceId(),1,1,1,0,1);
+//                sound s = mSounds.get(15-((position-position%16)/16));
+//                soundPool.play(s.getSoundResourceId(),1,1,1,0,1);
 
-
-
-
+                binArray[position]=!binArray[position];
             }
         });
-
 
     }
 
@@ -139,9 +145,18 @@ public class MainActivity extends ActionBarActivity {
         mSounds.add(s);
     }
 
-//    public void play(Button v){
+
+    public void play(View v){
+//        for (int i = 0; i<16; i++){
 //
-//    }
+//        }
+        for (int i=0;i<binArray.length;i++){
+            if (binArray[i]){
+                sound s = mSounds.get(15-((i-i%16)/16));
+                soundPool.play(s.getSoundResourceId(),1,1,1,0,1);
+            }
+        }
+    }
 
     //PLAY button should take a method call from this place
     // it should call gridView.getAdapter().
