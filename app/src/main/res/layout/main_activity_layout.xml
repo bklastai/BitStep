@@ -26,7 +26,12 @@
             android:layout_width="match_parent"
             android:layout_height="3dp"
             android:text="@string/button_playPause"
+<<<<<<< HEAD
             android:onClick="playMusic"/>
+=======
+            android:onClick="play"
+            android:id="@+id/play" />
+>>>>>>> origin/master
         <Button
             android:layout_weight="1"
             android:layout_width="match_parent"
