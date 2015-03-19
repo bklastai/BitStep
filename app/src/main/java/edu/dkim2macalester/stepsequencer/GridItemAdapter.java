@@ -9,14 +9,14 @@ import android.widget.BaseAdapter;
 /**
  * Created by Benas on 3/4/2015.
  */
-public class ButtonAdapter extends BaseAdapter{
+public class GridItemAdapter extends BaseAdapter{
 
     private Context mContext;
     private int gridWidth = 16;
     private int gridHeight = 16;
     private Integer[] values = new Integer[gridWidth*gridHeight];
 
-    public ButtonAdapter(Context c) {
+    public GridItemAdapter(Context c) {
         mContext = c;
         initValues();
     }
@@ -51,9 +51,11 @@ public class ButtonAdapter extends BaseAdapter{
 
     public void initValues(){
         for (int i=0;i<gridHeight*gridWidth;i++){
-            values[i]= R.drawable.custom_button_grid_cell;
+            values[i]= R.drawable.empty_square;
         }
     }
+
+
 
 
 

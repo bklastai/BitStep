@@ -21,10 +21,12 @@
             android:layout_height="3dp"
             android:text="@string/button_instruments" />
         <Button
+            android:id="@+id/playButton"
             android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="3dp"
-            android:text="@string/button_playPause"/>
+            android:text="@string/button_playPause"
+            android:onClick="playMusic"/>
         <Button
             android:layout_weight="1"
             android:layout_width="match_parent"
@@ -32,7 +34,7 @@
             android:text="@string/button_drumsOption"/>
     </LinearLayout>
 
-    <edu.dkim2macalester.stepsequencer.mySquareLayout
+    <edu.dkim2macalester.stepsequencer.MySquareLayout
         android:id= "@+id/squareLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -48,7 +50,7 @@
             android:clickable="true"
             android:gravity="center"/>
         <!--android:orientation="vertical"-->
-    </edu.dkim2macalester.stepsequencer.mySquareLayout>
+    </edu.dkim2macalester.stepsequencer.MySquareLayout>
 
 
 </LinearLayout>
