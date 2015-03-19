@@ -21,21 +21,12 @@
             android:layout_height="3dp"
             android:text="@string/button_instruments" />
         <Button
-            android:id="@+id/playButton"
+            android:id="@+id/play"
             android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="3dp"
-<<<<<<< HEAD
             android:text="@string/button_playPause"
-<<<<<<< HEAD
-            android:onClick="playMusic"/>
-=======
-            android:onClick="play"
-            android:id="@+id/play" />
->>>>>>> origin/master
-=======
-            android:text="@string/button_playPause"/>
->>>>>>> parent of bfbcaa4... Sound plays when play button is pressed
+            android:onClick="playMusic" />
         <Button
             android:layout_weight="1"
             android:layout_width="match_parent"
