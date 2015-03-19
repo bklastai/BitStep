@@ -34,7 +34,6 @@ public class MainActivity extends ActionBarActivity {
 =======
     private SoundPool soundPool;
     private ArrayList<sound> mSounds = null;
-    private boolean [] binArray;
 
 >>>>>>> origin/master
 
@@ -49,6 +48,7 @@ public class MainActivity extends ActionBarActivity {
 
         //Set up the gridview adapter
         gridView = (GridView) findViewById(R.id.gridview);
+<<<<<<< HEAD
         gridView.setAdapter(new GridItemAdapter(this));
 
 <<<<<<< HEAD
@@ -71,6 +71,9 @@ public class MainActivity extends ActionBarActivity {
         }
 
         //set up the soundPool
+=======
+        gridView.setAdapter(new ButtonAdapter(this));
+>>>>>>> parent of bfbcaa4... Sound plays when play button is pressed
         soundPool = new SoundPool(16, AudioManager.STREAM_MUSIC, 0);
         mSounds = new ArrayList<>();
 
@@ -82,13 +85,20 @@ public class MainActivity extends ActionBarActivity {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 v.setSelected(!v.isSelected());
-//                sound s = mSounds.get(15-((position-position%16)/16));
-//                soundPool.play(s.getSoundResourceId(),1,1,1,0,1);
+                sound s = mSounds.get((position-position%16)/16);
+                soundPool.play(s.getSoundResourceId(),1,1,1,0,1);
 
+
+
+
+<<<<<<< HEAD
                 binArray[position]=!binArray[position];
 >>>>>>> origin/master
+=======
+>>>>>>> parent of bfbcaa4... Sound plays when play button is pressed
             }
         });
+
 
     }
 
@@ -175,6 +185,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
     public void play(View v){
@@ -201,6 +212,11 @@ public class MainActivity extends ActionBarActivity {
         toast.show();
     }
 
+=======
+//    public void play(Button v){
+//
+//    }
+>>>>>>> parent of bfbcaa4... Sound plays when play button is pressed
 
 
     public void initSelection(){
