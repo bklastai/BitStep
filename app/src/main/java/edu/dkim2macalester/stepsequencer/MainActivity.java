@@ -58,8 +58,8 @@ public class MainActivity extends ActionBarActivity {
                 }
                 selection[position] = !selection[position];
 
-                Sound s = mSounds.get((position - position % 16) / 16);
-                soundPool.play(s.getSoundResourceId(), 1, 1, 1, 0, 1);
+                //Sound s = mSounds.get((position - position % 16) / 16);
+                //soundPool.play(s.getSoundResourceId(), 1, 1, 1, 0, 1);
             }
         });
 
@@ -149,30 +149,31 @@ public class MainActivity extends ActionBarActivity {
 
 
 
-//    public void play(View v){
-//        for (int i=0;i<selection.length;i++){
-//            if (selection[i]){
-//                Sound s = mSounds.get(15-((i-i%16)/16));
-//                soundPool.play(s.getSoundResourceId(),1,1,1,0,1);
-//            }
-//        }
-//    }
+    public void play(View v){
+        for (int i = 0; i < selection.length; i++){
+            if (selection[i]){
+                Sound s = mSounds.get((i - i % 16) / 16);
+                soundPool.play(s.getSoundResourceId(),1,1,1,0,1);
+            }
+        }
+    }
 
 
-    public void playMusic(View v){
+    /*public void playMusic(View v){
         String selectedItems = "";
         for (int i = 0; i<selection.length; i++){
             if (selection[i]){
                 selectedItems = selectedItems + i + ", ";
             }
         }
+
         Toast toast = Toast.makeText(getApplicationContext(), "Grid Items Selected: " + selectedItems, Toast.LENGTH_SHORT);
         toast.show();
-    }
+    }*/
 
 
     public void initSelection(){
-        for (int i=0;i<selection.length;i++){
+        for (int i = 0; i < selection.length; i++){
             selection[i]= false;
         }
     }
