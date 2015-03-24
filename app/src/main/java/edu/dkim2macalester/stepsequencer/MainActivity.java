@@ -24,7 +24,8 @@ public class MainActivity extends ActionBarActivity {
     private GridView gridView;
 
     private int numberOfGrids = 1; //change this value when adding new gridviews (to the right of the screen)
-    private boolean[] selection = new boolean[numberOfGrids*256];
+    //private boolean[] selection = new boolean[numberOfGrids*256];
+    booleanGridModel gridModel = new booleanGridModel();
 
     private SoundPool soundPool;
     private ArrayList<Sound> mSounds = null;
@@ -34,8 +35,7 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //set selection to false for all grid cells
-        initSelection();
+
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         setContentView(R.layout.main_activity_layout);
 
@@ -51,12 +51,12 @@ public class MainActivity extends ActionBarActivity {
         //Set up the OnClickListener; change BackgroundResource and set notes 'selection' accordingly
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                if (!selection[position]) {
+                if (!gridModel.isSelected(position)) {
                     v.setBackgroundResource(R.drawable.black_square);
                 } else {
                     v.setBackgroundResource(R.drawable.empty_square);
                 }
-                selection[position] = !selection[position];
+                gridModel.setSelected(position);
 
                 //Sound s = mSounds.get((position - position % 16) / 16);
                 //soundPool.play(s.getSoundResourceId(), 1, 1, 1, 0, 1);
@@ -150,12 +150,20 @@ public class MainActivity extends ActionBarActivity {
 
 
     public void play(View v){
-        for (int i = 0; i < selection.length; i++){
+        //TODO: put into nested for loops to make correct pausing.
+        /*for (int i = 0; i < selection.length; i++){
             if (selection[i]){
                 Sound s = mSounds.get((i - i % 16) / 16);
                 soundPool.play(s.getSoundResourceId(),1,1,1,0,1);
+
+                //code from http://stackoverflow.com/questions/2663419/problem-having-my-main-thread-sleeping
+                try{
+                    Thread.sleep(125);
+                }catch(InterruptedException e){
+                    System.out.println("Interrupted");
+                }
             }
-        }
+        }*/
     }
 
 
@@ -170,13 +178,6 @@ public class MainActivity extends ActionBarActivity {
         Toast toast = Toast.makeText(getApplicationContext(), "Grid Items Selected: " + selectedItems, Toast.LENGTH_SHORT);
         toast.show();
     }*/
-
-
-    public void initSelection(){
-        for (int i = 0; i < selection.length; i++){
-            selection[i]= false;
-        }
-    }
 
 
     @Override
