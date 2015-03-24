@@ -19,13 +19,9 @@ public class booleanGridModel extends Object {
         selections[position] = !selections[position];
     }
 
-    public int getSample(int position) {
-        return position % size;
-    }
+    public int getSample(int position) { return (position - position % size) / size; }
 
-    public int getTimestamp(int position) {
-        return (position - position % size) / size;
-    }
+    public int getTimestamp(int position) { return position % size; }
 
     public boolean isSelected(int position) {
         return selections[position];

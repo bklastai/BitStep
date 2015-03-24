@@ -23,6 +23,7 @@ public class MainActivity extends ActionBarActivity {
 
     private GridView gridView;
 
+    private int size = 16;
     private int numberOfGrids = 1; //change this value when adding new gridviews (to the right of the screen)
     //private boolean[] selection = new boolean[numberOfGrids*256];
     booleanGridModel gridModel = new booleanGridModel();
@@ -151,19 +152,20 @@ public class MainActivity extends ActionBarActivity {
 
     public void play(View v){
         //TODO: put into nested for loops to make correct pausing.
-        /*for (int i = 0; i < selection.length; i++){
-            if (selection[i]){
-                Sound s = mSounds.get((i - i % 16) / 16);
-                soundPool.play(s.getSoundResourceId(),1,1,1,0,1);
-
-                //code from http://stackoverflow.com/questions/2663419/problem-having-my-main-thread-sleeping
-                try{
-                    Thread.sleep(125);
-                }catch(InterruptedException e){
-                    System.out.println("Interrupted");
+        for (int i = 0; i < size; i++){ //looping through columns/timestamps
+            for (int j = 0; j < size; j++) {
+                if(gridModel.isSelected((j*size)+i)){
+                    Sound s = mSounds.get(gridModel.getSample((j*size)+i));
+                    soundPool.play(s.getSoundResourceId(),1,1,1,0,1);
                 }
             }
-        }*/
+            try{
+                Thread.sleep(125);
+            } catch(InterruptedException e){
+                System.out.println("Interrupted");
+            }
+
+        }
     }
 
 
