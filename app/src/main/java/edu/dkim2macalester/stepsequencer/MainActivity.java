@@ -8,12 +8,16 @@ import android.os.Bundle;
 
 import android.content.pm.ActivityInfo;
 import android.support.v7.app.ActionBarActivity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.GridView;
 
+import android.widget.PopupWindow;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -48,6 +52,18 @@ public class MainActivity extends ActionBarActivity {
         mSounds = new ArrayList<>();
         loadSounds();
 
+        final Button instruments = (Button)findViewById(R.id.instruments);
+        instruments.setOnClickListener(new Button.OnClickListener(){
+
+            @Override
+            public void onClick(View arg0){
+                LayoutInflater layoutInflater = (LayoutInflater)getBaseContext().getSystemService(LAYOUT_INFLATER_SERVICE);
+                View popupInstrumList = layoutInflater.inflate(R.layout.popup, null);
+                final PopupWindow popupWindow = new PopupWindow( popupInstrumList,
+                        LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+
+                popupWindow.showAtLocation(findViewById(R.id.squareLayout),0, instruments.getWidth(), 0);
+            }});
         //Set up the OnClickListener; change BackgroundResource and set notes 'selection' accordingly
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
@@ -187,7 +203,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
