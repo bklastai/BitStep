@@ -1,24 +1,20 @@
 package edu.dkim2macalester.stepsequencer;
 
 
+import android.content.pm.ActivityInfo;
 import android.media.AudioManager;
 import android.media.SoundPool;
-
 import android.os.Bundle;
-
-import android.content.pm.ActivityInfo;
 import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
-
 import android.widget.PopupWindow;
-import android.view.ViewGroup.LayoutParams;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -49,22 +45,24 @@ public class MainActivity extends ActionBarActivity {
         gridView = (GridView) findViewById(R.id.gridview);
         gridView.setAdapter(new GridItemAdapter(this));
 
+
         soundPool = new SoundPool(16, AudioManager.STREAM_MUSIC, 0);
         mSounds = new ArrayList<>();
         loadSounds();
 
         final Button instruments = (Button)findViewById(R.id.instruments);
-        instruments.setOnClickListener(new Button.OnClickListener(){
 
+        instruments.setOnClickListener(new Button.OnClickListener(){
             @Override
             public void onClick(View arg0){
                 LayoutInflater layoutInflater = (LayoutInflater)getBaseContext().getSystemService(LAYOUT_INFLATER_SERVICE);
                 View popupInstrumList = layoutInflater.inflate(R.layout.popup, null);
                 final PopupWindow popupWindow = new PopupWindow( popupInstrumList,
                         LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-
                 popupWindow.showAtLocation(findViewById(R.id.squareLayout),0, instruments.getWidth(), 0);
             }});
+
+
         //Set up the OnClickListener; change BackgroundResource and set notes 'selection' accordingly
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
@@ -168,8 +166,9 @@ public class MainActivity extends ActionBarActivity {
 
     public void play(View v){
         //TODO: put into nested for loops to make correct pausing.
-        for (int i = 0; i < size; i++){ //looping through columns/timestamps
-            for (int j = 0; j < size; j++) {
+        for (int i = 0; i < size; i++){ //looping through beats/timestamps/columns
+
+            for (int j = 0; j < size; j++) { //looping through samples/scale
                 if(gridModel.isSelected((j*size)+i)){
                     Sound s = mSounds.get(gridModel.getSample((j*size)+i));
                     soundPool.play(s.getSoundResourceId(),1,1,1,0,1);
@@ -185,17 +184,17 @@ public class MainActivity extends ActionBarActivity {
     }
 
 
-    /*public void playMusic(View v){
-        String selectedItems = "";
-        for (int i = 0; i<selection.length; i++){
-            if (selection[i]){
-                selectedItems = selectedItems + i + ", ";
-            }
-        }
-
-        Toast toast = Toast.makeText(getApplicationContext(), "Grid Items Selected: " + selectedItems, Toast.LENGTH_SHORT);
-        toast.show();
-    }*/
+//    public void playMusic(View v){
+//        String selectedItems = "";
+//        for (int i = 0; i<selection.length; i++){
+//            if (selection[i]){
+//                selectedItems = selectedItems + i + ", ";
+//            }
+//        }
+//
+//        Toast toast = Toast.makeText(getApplicationContext(), "Grid Items Selected: " + selectedItems, Toast.LENGTH_SHORT);
+//        toast.show();
+//    }
 
 
     @Override
