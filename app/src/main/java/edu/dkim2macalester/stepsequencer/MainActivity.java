@@ -108,27 +108,27 @@ public class MainActivity extends ActionBarActivity {
 
         s = new Sound();
         s.setDescription("hh closed");
-        s.setSoundResourceId(soundPool.load(this,R.raw.hhclosed,1));
+        s.setSoundResourceId(soundPool.load(this,R.raw.hhc,1));
         mSounds.add(s);
 
         s = new Sound();
         s.setDescription("hh open");
-        s.setSoundResourceId(soundPool.load(this,R.raw.hhopen,1));
+        s.setSoundResourceId(soundPool.load(this,R.raw.hho,1));
         mSounds.add(s);
 
         s = new Sound();
         s.setDescription("conga low");
-        s.setSoundResourceId(soundPool.load(this,R.raw.congalo,1));
+        s.setSoundResourceId(soundPool.load(this,R.raw.congal,1));
         mSounds.add(s);
 
         s = new Sound();
         s.setDescription("conga med");
-        s.setSoundResourceId(soundPool.load(this,R.raw.congamed,1));
+        s.setSoundResourceId(soundPool.load(this,R.raw.congam,1));
         mSounds.add(s);
 
         s = new Sound();
         s.setDescription("conga hi");
-        s.setSoundResourceId(soundPool.load(this,R.raw.congahi,1));
+        s.setSoundResourceId(soundPool.load(this,R.raw.congah,1));
         mSounds.add(s);
 
         s = new Sound();
