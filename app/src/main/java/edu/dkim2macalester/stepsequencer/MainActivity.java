@@ -18,6 +18,9 @@ import android.widget.PopupWindow;
 
 import java.util.ArrayList;
 
+import edu.dkim2macalester.stepsequencer.model.BooleanGridModel;
+import edu.dkim2macalester.stepsequencer.model.Song;
+
 
 public class MainActivity extends ActionBarActivity {
 
@@ -25,8 +28,8 @@ public class MainActivity extends ActionBarActivity {
 
     private int size = 16;
     private int numberOfGrids = 1; //change this value when adding new gridviews (to the right of the screen)
-    //private boolean[] selection = new boolean[numberOfGrids*256];
-    booleanGridModel gridModel = new booleanGridModel();
+    private Song song = new Song();
+    private BooleanGridModel gridModel = song.getCurrentBGM();
 
     private SoundPool soundPool;
     private ArrayList<Sound> mSounds = null;
@@ -36,7 +39,6 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         setContentView(R.layout.main_activity_layout);
 
@@ -51,7 +53,6 @@ public class MainActivity extends ActionBarActivity {
         loadSounds();
 
         final Button instruments = (Button)findViewById(R.id.instruments);
-
         instruments.setOnClickListener(new Button.OnClickListener(){
             @Override
             public void onClick(View arg0){
@@ -82,7 +83,7 @@ public class MainActivity extends ActionBarActivity {
 
     private void loadSounds() {
         Sound s = new Sound();
-        s.setDescription("Kick");
+        s.setDescription("kick");
         s.setSoundResourceId(soundPool.load(this,R.raw.kick,1));
         mSounds.add(s);
 
@@ -107,57 +108,57 @@ public class MainActivity extends ActionBarActivity {
         mSounds.add(s);
 
         s = new Sound();
-        s.setDescription("hh closed");
+        s.setDescription("hh_closed");
         s.setSoundResourceId(soundPool.load(this,R.raw.hhclosed,1));
         mSounds.add(s);
 
         s = new Sound();
-        s.setDescription("hh open");
+        s.setDescription("hh_open");
         s.setSoundResourceId(soundPool.load(this,R.raw.hhopen,1));
         mSounds.add(s);
 
         s = new Sound();
-        s.setDescription("conga low");
+        s.setDescription("conga_low");
         s.setSoundResourceId(soundPool.load(this,R.raw.congalo,1));
         mSounds.add(s);
 
         s = new Sound();
-        s.setDescription("conga med");
+        s.setDescription("conga_med");
         s.setSoundResourceId(soundPool.load(this,R.raw.congamed,1));
         mSounds.add(s);
 
         s = new Sound();
-        s.setDescription("conga hi");
+        s.setDescription("conga_hi");
         s.setSoundResourceId(soundPool.load(this,R.raw.congahi,1));
         mSounds.add(s);
 
         s = new Sound();
-        s.setDescription("tom lo");
+        s.setDescription("tom_lo");
         s.setSoundResourceId(soundPool.load(this,R.raw.tomlo,1));
         mSounds.add(s);
 
         s = new Sound();
-        s.setDescription("tom med");
+        s.setDescription("tom_med");
         s.setSoundResourceId(soundPool.load(this,R.raw.tommed,1));
         mSounds.add(s);
 
         s = new Sound();
-        s.setDescription("tom hi");
+        s.setDescription("tom_hi");
         s.setSoundResourceId(soundPool.load(this,R.raw.tomhi,1));
         mSounds.add(s);
 
         s = new Sound();
-        s.setDescription("cymbal 1");
+        s.setDescription("cymbal_1");
         s.setSoundResourceId(soundPool.load(this,R.raw.cymbal1,1));
         mSounds.add(s);
 
         s = new Sound();
-        s.setDescription("cymbal 2");
+        s.setDescription("cymbal_2");
         s.setSoundResourceId(soundPool.load(this,R.raw.cymbal2,1));
         mSounds.add(s);
 
         s = new Sound();
-        s.setDescription("cymbal 3");
+        s.setDescription("cymbal_3");
         s.setSoundResourceId(soundPool.load(this,R.raw.cymbal3,1));
         mSounds.add(s);
     }
@@ -165,10 +166,9 @@ public class MainActivity extends ActionBarActivity {
 
 
     public void play(View v){
-        //TODO: put into nested for loops to make correct pausing.
-        for (int i = 0; i < size; i++){ //looping through beats/timestamps/columns
+        for (int i = 0; i < size; i++){ //looping through beats (aka timestamps/columns)
 
-            for (int j = 0; j < size; j++) { //looping through samples/scale
+            for (int j = 0; j < size; j++) { //looping through samples (aka y-axis/scale)
                 if(gridModel.isSelected((j*size)+i)){
                     Sound s = mSounds.get(gridModel.getSample((j*size)+i));
                     soundPool.play(s.getSoundResourceId(),1,1,1,0,1);
@@ -182,20 +182,6 @@ public class MainActivity extends ActionBarActivity {
 
         }
     }
-
-
-//    public void playMusic(View v){
-//        String selectedItems = "";
-//        for (int i = 0; i<selection.length; i++){
-//            if (selection[i]){
-//                selectedItems = selectedItems + i + ", ";
-//            }
-//        }
-//
-//        Toast toast = Toast.makeText(getApplicationContext(), "Grid Items Selected: " + selectedItems, Toast.LENGTH_SHORT);
-//        toast.show();
-//    }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

@@ -2,10 +2,11 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/holo_purple"
+    android:background="#424242"
     android:orientation="horizontal" >
 
     <LinearLayout
+        android:id="@+id/button_holder"
         android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="match_parent">
@@ -13,33 +14,38 @@
             android:id="@+id/music_options"
             android:layout_weight="1"
             android:layout_width="match_parent"
-            android:layout_height="fill_parent"
+            android:layout_height="match_parent"
             android:text="@string/button_musicOptions" />
         <Button
             android:id="@+id/instruments"
             android:layout_weight="1"
             android:layout_width="match_parent"
-            android:layout_height="fill_parent"
+            android:layout_height="match_parent"
             android:text="@string/button_instruments" />
         <Button
             android:id="@+id/play"
             android:layout_weight="1"
             android:layout_width="match_parent"
-            android:layout_height="fill_parent"
+            android:layout_height="match_parent"
             android:text="@string/button_playPause"
             android:onClick="play" />
         <Button
             android:layout_weight="1"
             android:layout_width="match_parent"
-            android:layout_height="fill_parent"
+            android:layout_height="match_parent"
             android:text="@string/button_drumsOption"/>
     </LinearLayout>
 
+    <Button
+        android:id="@+id/previous_grid"
+        android:layout_weight="10"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"/>
+
     <edu.dkim2macalester.stepsequencer.MySquareLayout
         android:id= "@+id/squareLayout"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:background="@drawable/my_square_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:gravity="center">
         <GridView
             android:id="@+id/gridview"
@@ -51,6 +57,12 @@
             android:stretchMode="columnWidth"
             android:layout_centerInParent="true"/>
     </edu.dkim2macalester.stepsequencer.MySquareLayout>
+
+    <Button
+        android:id="@+id/next_grid"
+        android:layout_weight="15"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"/>
 
 
 </LinearLayout>
