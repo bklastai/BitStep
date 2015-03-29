@@ -10,7 +10,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup.LayoutParams;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
@@ -24,15 +24,16 @@ import edu.dkim2macalester.stepsequencer.model.Song;
 
 public class MainActivity extends ActionBarActivity {
 
-    private GridView gridView;
-
     private int size = 16;
-    private int numberOfGrids = 1; //change this value when adding new gridviews (to the right of the screen)
+
+    private GridView gridView;
+    private GridItemAdapter adapter;
+
     private Song song = new Song();
-    private BooleanGridModel gridModel = song.getCurrentBGM();
+    private BooleanGridModel BGM;
 
     private SoundPool soundPool;
-    private ArrayList<Sound> mSounds = null;
+    private ArrayList<Sound> mSounds = new ArrayList<>();
 
 
 
@@ -42,43 +43,44 @@ public class MainActivity extends ActionBarActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         setContentView(R.layout.main_activity_layout);
 
-
         //Set up the gridview adapter
         gridView = (GridView) findViewById(R.id.gridview);
-        gridView.setAdapter(new GridItemAdapter(this));
+        adapter = new GridItemAdapter(this);
 
+        BGM = song.getCurrentBGM();
+        gridView.setAdapter(adapter);
 
         soundPool = new SoundPool(16, AudioManager.STREAM_MUSIC, 0);
-        mSounds = new ArrayList<>();
         loadSounds();
 
-        final Button instruments = (Button)findViewById(R.id.instruments);
-        instruments.setOnClickListener(new Button.OnClickListener(){
-            @Override
-            public void onClick(View arg0){
-                LayoutInflater layoutInflater = (LayoutInflater)getBaseContext().getSystemService(LAYOUT_INFLATER_SERVICE);
-                View popupInstrumList = layoutInflater.inflate(R.layout.popup, null);
-                final PopupWindow popupWindow = new PopupWindow( popupInstrumList,
-                        LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-                popupWindow.showAtLocation(findViewById(R.id.squareLayout),0, instruments.getWidth(), 0);
-            }});
-
-
-        //Set up the OnClickListener; change BackgroundResource and set notes 'selection' accordingly
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                if (!gridModel.isSelected(position)) {
-                    v.setBackgroundResource(R.drawable.black_square);
+                if (!BGM.isSelected(position)) {
+                    v.setBackgroundResource(R.drawable.white_square);
                 } else {
                     v.setBackgroundResource(R.drawable.empty_square);
                 }
-                gridModel.setSelected(position);
-
-                //Sound s = mSounds.get((position - position % 16) / 16);
-                //soundPool.play(s.getSoundResourceId(), 1, 1, 1, 0, 1);
+                BGM.setSelected(position);
             }
         });
 
+        final Button next = (Button) findViewById(R.id.next_grid);
+        next.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                BGM = song.getNextBGM();
+                updateGridview();
+            }
+        });
+
+        final Button previous = (Button) findViewById(R.id.previous_grid);
+        previous.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                BGM = song.getPreviousBGM();
+                updateGridview();
+            }
+        });
     }
 
     private void loadSounds() {
@@ -163,24 +165,35 @@ public class MainActivity extends ActionBarActivity {
         mSounds.add(s);
     }
 
-
-
     public void play(View v){
-        for (int i = 0; i < size; i++){ //looping through beats (aka timestamps/columns)
+        for (BooleanGridModel bgm : song.getBGMList()){
+            BGM = bgm;
+            for (int i = 0; i < size; i++){ //looping through beats (aka timestamps/columns)
 
-            for (int j = 0; j < size; j++) { //looping through samples (aka y-axis/scale)
-                if(gridModel.isSelected((j*size)+i)){
-                    Sound s = mSounds.get(gridModel.getSample((j*size)+i));
-                    soundPool.play(s.getSoundResourceId(),1,1,1,0,1);
+                for (int j = 0; j < size; j++) { //looping through samples (aka y-axis/scale)
+                    if(BGM.isSelected((j*size)+i)){
+                        Sound s = mSounds.get(BGM.getSample((j*size)+i));
+                        soundPool.play(s.getSoundResourceId(),1,1,1,0,1);
+                    }
                 }
-            }
-            try{
-                Thread.sleep(125);
-            } catch(InterruptedException e){
-                System.out.println("Interrupted");
-            }
+                try{
+                    Thread.sleep(125);
+                } catch(InterruptedException e){
+                    System.out.println("Interrupted");
+                }
 
+            }
         }
+        BGM = song.getCurrentBGM();
+    }
+
+    public void onClickInstruments(View arg0){
+        Button instruments = (Button)findViewById(R.id.instruments);
+        LayoutInflater layoutInflater = (LayoutInflater)getBaseContext().getSystemService(LAYOUT_INFLATER_SERVICE);
+        View popupInstrumList = layoutInflater.inflate(R.layout.popup, null);
+        final PopupWindow popupWindow = new PopupWindow( popupInstrumList,
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        popupWindow.showAtLocation(findViewById(R.id.squareLayout),0, instruments.getWidth(), 0);
     }
 
     @Override
@@ -196,14 +209,23 @@ public class MainActivity extends ActionBarActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
+    public void updateGridview(){
+        for (int i=0; i<BGM.getBGMSize(); i++){
+            if (BGM.isSelected(i)){
+                adapter.editDrawableID(i, R.drawable.white_square);
+            }
+            else {
+                adapter.editDrawableID(i, R.drawable.empty_square);
+            }
+        }
+        adapter.notifyDataSetChanged();
+    }
 
 }

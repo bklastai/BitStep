@@ -21,7 +21,8 @@
             android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="@string/button_instruments" />
+            android:text="@string/button_instruments"
+            android:onClick="onClickInstruments" />
         <Button
             android:id="@+id/play"
             android:layout_weight="1"

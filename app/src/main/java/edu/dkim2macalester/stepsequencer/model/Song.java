@@ -9,18 +9,25 @@ public class Song extends Object {
 
 
     private ArrayList<BooleanGridModel> BGMList = new ArrayList<>();
+//    private BooleanGridModel[] BGMArray = (BooleanGridModel[]) BGMList.toArray();
     private int currentBGMIndex = 0;
 
 
+    public Song(){
+        init();
+    }
+
     public void addBGM(){
-        BGMList.add(new BooleanGridModel());
+        BooleanGridModel bgm = new BooleanGridModel();
+        BGMList.add(bgm);
+        BGMList.set(BGMList.size()-1, bgm);
     }
 
 
     public BooleanGridModel getNextBGM(){
         if (BGMList.size()-1>currentBGMIndex){
             currentBGMIndex++;
-            return BGMList.get(currentBGMIndex+1);
+            return BGMList.get(currentBGMIndex);
         }
         else {
             addBGM();
@@ -31,25 +38,31 @@ public class Song extends Object {
     public BooleanGridModel getPreviousBGM(){
         if (currentBGMIndex>0){
             currentBGMIndex--;
-            return BGMList.get(currentBGMIndex-1);
-        }
-        else {
-            return getCurrentBGM();
-        }
-    }
-
-
-
-    public BooleanGridModel getCurrentBGM(){
-        if (BGMList.size()>0){
             return BGMList.get(currentBGMIndex);
         }
         else {
-            addBGM();
             return getCurrentBGM();
         }
     }
 
 
+    public void init(){
+        BooleanGridModel bgm = new BooleanGridModel();
+        BGMList.add(bgm);
+        BGMList.set(0, bgm);
+    }
+
+    public BooleanGridModel getCurrentBGM(){
+        return BGMList.get(currentBGMIndex);
+    }
+
+
+    public int getBGMListSize(){
+        return BGMList.size();
+    }
+
+    public ArrayList<BooleanGridModel> getBGMList(){
+        return this.BGMList;
+    }
 
 }

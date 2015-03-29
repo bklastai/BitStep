@@ -9,6 +9,9 @@ public class BooleanGridModel extends Object {
     int height = 16;
     private boolean[] selections = new boolean[width*height];
 
+    public BooleanGridModel(){
+        initSelection();
+    }
 
     public void initSelection(){
         for (int i = 0; i < selections.length; i++){
@@ -28,11 +31,11 @@ public class BooleanGridModel extends Object {
         return selections[position];
     }
 
-    public int getSizeGridModel() {
+    public int getBGMSize() {
         return selections.length;
     }
 
-    public boolean[] getSelections(){
+    public boolean[] getBGM(){
         return this.selections;
     }
 }

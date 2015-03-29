@@ -12,9 +12,14 @@ import android.widget.BaseAdapter;
 public class GridItemAdapter extends BaseAdapter{
 
     private Context mContext;
+
     private int gridWidth = 16;
     private int gridHeight = 16;
+
     private Integer[] values = new Integer[gridWidth*gridHeight];
+
+
+
 
     public GridItemAdapter(Context c) {
         mContext = c;
@@ -27,6 +32,10 @@ public class GridItemAdapter extends BaseAdapter{
 
     public Object getItem(int position) {
         return values[position];
+    }
+
+    public void editDrawableID(int index, Integer obj){
+        values[index] = obj;
     }
 
     public long getItemId(int position) {
@@ -54,6 +63,8 @@ public class GridItemAdapter extends BaseAdapter{
             values[i]= R.drawable.empty_square;
         }
     }
+
+
 
 
 
