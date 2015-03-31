@@ -1,9 +1,11 @@
-package edu.dkim2macalester.stepsequencer;
+package edu.dkim2macalester.stepsequencer.view;
 
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+
+import edu.dkim2macalester.stepsequencer.R;
 
 
 /**
@@ -22,7 +24,7 @@ public class GridItemAdapter extends BaseAdapter{
 
 
     public GridItemAdapter(Context c) {
-        mContext = c;
+        this.mContext = c;
         initValues();
     }
 
@@ -60,7 +62,7 @@ public class GridItemAdapter extends BaseAdapter{
 
     public void initValues(){
         for (int i=0;i<gridHeight*gridWidth;i++){
-            values[i]= R.drawable.empty_square;
+            this.values[i]= R.drawable.empty_square;
         }
     }
 

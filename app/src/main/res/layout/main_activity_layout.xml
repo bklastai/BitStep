@@ -28,8 +28,7 @@
             android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="@string/button_playPause"
-            android:onClick="play" />
+            android:text="@string/button_playPause" />
         <Button
             android:layout_weight="1"
             android:layout_width="match_parent"
@@ -41,9 +40,10 @@
         android:id="@+id/previous_grid"
         android:layout_weight="10"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:text="@string/previous"/>
 
-    <edu.dkim2macalester.stepsequencer.MySquareLayout
+    <edu.dkim2macalester.stepsequencer.view.MySquareLayout
         android:id= "@+id/squareLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -57,13 +57,14 @@
             android:horizontalSpacing="0dp"
             android:stretchMode="columnWidth"
             android:layout_centerInParent="true"/>
-    </edu.dkim2macalester.stepsequencer.MySquareLayout>
+    </edu.dkim2macalester.stepsequencer.view.MySquareLayout>
 
     <Button
         android:id="@+id/next_grid"
         android:layout_weight="15"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:text="@string/next"/>
 
 
 </LinearLayout>

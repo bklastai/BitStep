@@ -1,4 +1,4 @@
-package edu.dkim2macalester.stepsequencer;
+package edu.dkim2macalester.stepsequencer.controller;
 
 
 import android.content.pm.ActivityInfo;
@@ -18,8 +18,11 @@ import android.widget.PopupWindow;
 
 import java.util.ArrayList;
 
+import edu.dkim2macalester.stepsequencer.R;
 import edu.dkim2macalester.stepsequencer.model.BooleanGridModel;
 import edu.dkim2macalester.stepsequencer.model.Song;
+import edu.dkim2macalester.stepsequencer.model.Sound;
+import edu.dkim2macalester.stepsequencer.view.GridItemAdapter;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -43,11 +46,12 @@ public class MainActivity extends ActionBarActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         setContentView(R.layout.main_activity_layout);
 
+        //Get model data
+        BGM = song.getCurrentBGM();
+
         //Set up the gridview adapter
         gridView = (GridView) findViewById(R.id.gridview);
         adapter = new GridItemAdapter(this);
-
-        BGM = song.getCurrentBGM();
         gridView.setAdapter(adapter);
 
         soundPool = new SoundPool(16, AudioManager.STREAM_MUSIC, 0);
@@ -57,28 +61,45 @@ public class MainActivity extends ActionBarActivity {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 if (!BGM.isSelected(position)) {
                     v.setBackgroundResource(R.drawable.white_square);
+                    adapter.editDrawableID(position, R.drawable.white_square);
                 } else {
                     v.setBackgroundResource(R.drawable.empty_square);
+                    adapter.editDrawableID(position, R.drawable.empty_square);
                 }
-                BGM.setSelected(position);
+                BGM.setSelected(position, !BGM.isSelected(position));
             }
         });
 
         final Button next = (Button) findViewById(R.id.next_grid);
+//        next.setBackgroundResource(R.drawable.next1);
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 BGM = song.getNextBGM();
-                updateGridview();
+                updateGridItemAdapter(BGM);
             }
         });
 
         final Button previous = (Button) findViewById(R.id.previous_grid);
+//        previous.setBackgroundResource(R.drawable.previous1);
         previous.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 BGM = song.getPreviousBGM();
-                updateGridview();
+                updateGridItemAdapter(BGM);
+            }
+        });
+
+        final Button play = (Button) findViewById(R.id.play);
+        play.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                for (BooleanGridModel bgm : song.getBGMList()){
+                    BGM = bgm;
+                    updateGridItemAdapter(BGM);
+                    play(v, BGM);
+                }
+                updateGridItemAdapter(song.getCurrentBGM());
             }
         });
     }
@@ -165,27 +186,56 @@ public class MainActivity extends ActionBarActivity {
         mSounds.add(s);
     }
 
-    public void play(View v){
-        for (BooleanGridModel bgm : song.getBGMList()){
-            BGM = bgm;
-            for (int i = 0; i < size; i++){ //looping through beats (aka timestamps/columns)
-
-                for (int j = 0; j < size; j++) { //looping through samples (aka y-axis/scale)
-                    if(BGM.isSelected((j*size)+i)){
-                        Sound s = mSounds.get(BGM.getSample((j*size)+i));
-                        soundPool.play(s.getSoundResourceId(),1,1,1,0,1);
-                    }
+    public void play(View v, BooleanGridModel bgm){
+        for (int i = 0; i < size; i++){ //looping through beats (aka timestamps/columns)
+//                selectRow(i, bgm);
+            for (int j = 0; j < size; j++) { //looping through samples (aka y-axis/scale)
+                if(bgm.isSelected((j*size)+i)){
+                    Sound s = mSounds.get(bgm.getSample((j*size)+i));
+                    soundPool.play(s.getSoundResourceId(),1,1,1,0,1);//(binary arguments) left speaker, right speaker, priority, looping, speed of playback
                 }
-                try{
-                    Thread.sleep(125);
-                } catch(InterruptedException e){
-                    System.out.println("Interrupted");
-                }
+            }
+            try{
+                Thread.sleep(125);
+            } catch(InterruptedException e){
+                System.out.println("Interrupted");
+            }
+//                deselectRow(i, bgm);
+        }
+    }
 
+    public void updateGridItemAdapter(BooleanGridModel bgm){
+        for (int i=0; i<bgm.getBGMSize(); i++){
+            if (bgm.isSelected(i)){
+                adapter.editDrawableID(i, R.drawable.white_square);
+            }
+            else {
+                adapter.editDrawableID(i, R.drawable.empty_square);
             }
         }
-        BGM = song.getCurrentBGM();
+        adapter.notifyDataSetChanged(); //only needed if we add new data..
+        gridView.invalidateViews();
     }
+
+
+//    public void selectRow(int i, BooleanGridModel bgm) {
+//        for (int j = 0; j < size; j++) { //looping through samples (aka y-axis/scale)
+//            if (!bgm.isSelected((j*size)+i)){
+//                adapter.editDrawableID((j*size)+i, R.drawable.black_square);
+//            }
+//        }
+//        adapter.notifyDataSetChanged();
+//    }
+//
+//    public void deselectRow(int i, BooleanGridModel bgm) {
+//        for (int j = 0; j < size; j++) { //looping through samples (aka y-axis/scale)
+//            if(!bgm.isSelected((j*size)+i)){
+//                adapter.editDrawableID(j*size+i, R.drawable.empty_square);
+//            }
+//        }
+//        adapter.notifyDataSetChanged();
+//    }
+
 
     public void onClickInstruments(View arg0){
         Button instruments = (Button)findViewById(R.id.instruments);
@@ -204,7 +254,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
     @Override
-     public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
@@ -214,18 +264,6 @@ public class MainActivity extends ActionBarActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    public void updateGridview(){
-        for (int i=0; i<BGM.getBGMSize(); i++){
-            if (BGM.isSelected(i)){
-                adapter.editDrawableID(i, R.drawable.white_square);
-            }
-            else {
-                adapter.editDrawableID(i, R.drawable.empty_square);
-            }
-        }
-        adapter.notifyDataSetChanged();
     }
 
 }

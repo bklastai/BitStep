@@ -19,8 +19,8 @@ public class BooleanGridModel extends Object {
         }
     }
 
-    public void setSelected(int position){
-        selections[position] = !selections[position];
+    public void setSelected(int position, boolean NOTisSelected){
+        selections[position] = NOTisSelected;
     }
 
     public int getSample(int position) { return (position - position % width) / height; }

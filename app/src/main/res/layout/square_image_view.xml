@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<edu.dkim2macalester.stepsequencer.SquareImageView
+<edu.dkim2macalester.stepsequencer.view.SquareImageView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/square_image_view"
     android:layout_weight="500"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-</edu.dkim2macalester.stepsequencer.SquareImageView>
+</edu.dkim2macalester.stepsequencer.view.SquareImageView>

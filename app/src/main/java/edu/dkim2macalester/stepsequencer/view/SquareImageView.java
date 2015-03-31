@@ -1,4 +1,4 @@
-package edu.dkim2macalester.stepsequencer;
+package edu.dkim2macalester.stepsequencer.view;
 
 import android.widget.ImageView;
 import android.content.Context;

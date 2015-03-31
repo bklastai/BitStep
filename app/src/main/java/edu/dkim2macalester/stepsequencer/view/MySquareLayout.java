@@ -1,9 +1,11 @@
-package edu.dkim2macalester.stepsequencer;
+package edu.dkim2macalester.stepsequencer.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.LinearLayout;
+
+import edu.dkim2macalester.stepsequencer.R;
 
 
 /**

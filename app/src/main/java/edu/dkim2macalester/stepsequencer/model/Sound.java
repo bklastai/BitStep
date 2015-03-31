@@ -1,4 +1,4 @@
-package edu.dkim2macalester.stepsequencer;
+package edu.dkim2macalester.stepsequencer.model;
 
 /**
  * Created by aronthomas on 3/18/15.

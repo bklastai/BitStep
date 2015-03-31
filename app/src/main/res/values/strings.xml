@@ -9,5 +9,7 @@
     <string name="button_playPause">Play Pause</string>
     <string name="button_drumsOption">Drums</string>
     <string name="none"> </string>
+    <string name="previous">Previous</string>
+    <string name="next">Next</string>
 
 </resources>
