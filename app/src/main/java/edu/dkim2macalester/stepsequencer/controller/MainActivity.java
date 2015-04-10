@@ -1,11 +1,14 @@
 package edu.dkim2macalester.stepsequencer.controller;
 
 
+import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,6 +18,10 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.PopupWindow;
+
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 import java.util.ArrayList;
 
@@ -42,6 +49,7 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
+        enableStrictMode(this);
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         setContentView(R.layout.main_activity_layout);
@@ -187,25 +195,13 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void play(View v, BooleanGridModel bgm){
-        for (int i = 0; i < size; i++){ //looping through beats (aka timestamps/columns)
-//                selectRow(i, bgm);
-            for (int j = 0; j < size; j++) { //looping through samples (aka y-axis/scale)
-                if(bgm.isSelected((j*size)+i)){
-                    Sound s = mSounds.get(bgm.getSample((j*size)+i));
-                    soundPool.play(s.getSoundResourceId(),1,1,1,0,1);//(binary arguments) left speaker, right speaker, priority, looping, speed of playback
-                }
-            }
-            try{
-                Thread.sleep(125);
-            } catch(InterruptedException e){
-                System.out.println("Interrupted");
-            }
-//                deselectRow(i, bgm);
-        }
+        handleGraphicPlayback(bgm);
+        Runnable r = new PlayThread(bgm);
+        new Thread(r).start();
     }
 
     public void updateGridItemAdapter(BooleanGridModel bgm){
-        for (int i=0; i<bgm.getBGMSize(); i++){
+        for (int i = 0; i < bgm.getBGMSize(); i++){
             if (bgm.isSelected(i)){
                 adapter.editDrawableID(i, R.drawable.white_square);
             }
@@ -218,24 +214,101 @@ public class MainActivity extends ActionBarActivity {
     }
 
 
-//    public void selectRow(int i, BooleanGridModel bgm) {
-//        for (int j = 0; j < size; j++) { //looping through samples (aka y-axis/scale)
-//            if (!bgm.isSelected((j*size)+i)){
-//                adapter.editDrawableID((j*size)+i, R.drawable.black_square);
-//            }
-//        }
-//        adapter.notifyDataSetChanged();
-//    }
-//
-//    public void deselectRow(int i, BooleanGridModel bgm) {
-//        for (int j = 0; j < size; j++) { //looping through samples (aka y-axis/scale)
-//            if(!bgm.isSelected((j*size)+i)){
-//                adapter.editDrawableID(j*size+i, R.drawable.empty_square);
-//            }
-//        }
-//        adapter.notifyDataSetChanged();
-//    }
+    public class Animation { //code based on http://bioportal.weizmann.ac.il/course/prog2/tutorial/essential/threads/timer.html
+        Timer timer;
+        private final BooleanGridModel bgm;
 
+        public Animation(int numGrids, BooleanGridModel bgm) { //numGrids - so can play through the number of grids presents in song
+            timer = new Timer();
+            timer.scheduleAtFixedRate(new SelectRowTask(), 0, 125);
+            this.bgm = bgm;
+        }
+
+        class SelectRowTask extends TimerTask {
+            int i = 0;
+
+            public void run() {
+                if (i > 0) {
+                    //if previous row still selected, deselect - this'll leave the last one selected TODO: IN THEORY
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            deselectRow(i, bgm);
+                        }
+                    });
+                }
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        selectRow(i, bgm);
+                        Log.d("testing", "i is set to column " + i); //TODO: remove me
+                    }
+                });
+
+                i++;
+
+                if (i > 14) {
+                    Log.d("testing", "PROBABLY NEVER WILL " + i); //TODO: remove me
+                    timer.cancel(); //Terminate the timer thread
+                    timer.purge();
+                }
+            }
+        }
+    }
+
+    //TODO: this can definitely be condensed/put somewhere else
+    public void handleGraphicPlayback(BooleanGridModel bgm){ //which sounds like a horrible feature for MMA recordings -
+        new Animation(1, bgm);
+    }
+
+    public void selectRow(int i, BooleanGridModel bgm) {
+        for (int j = 0; j < size; j++) { //looping through samples (aka y-axis/scale)
+            if (!bgm.isSelected((j*size)+i)){
+                adapter.editDrawableID((j*size)+i, R.drawable.black_square);
+            }
+        }
+        adapter.notifyDataSetChanged();
+    }
+
+    public void deselectRow(int i, BooleanGridModel bgm) {
+        for (int j = 0; j < size; j++) { //looping through samples (aka y-axis/scale)
+            if(!bgm.isSelected((j*size)+i)){
+                adapter.editDrawableID(j*size+i, R.drawable.white_square);
+            }
+        }
+        adapter.notifyDataSetChanged();
+    }
+
+    class PlayThread implements Runnable {
+        private final BooleanGridModel bgm;
+        //TODO: does the model actually have to be immutable if this is happening?
+        //on second thought - will it work this way at all if we want it to be able to change mid-stream?
+
+        public PlayThread (BooleanGridModel bgm) {
+            this.bgm = bgm;
+        }
+
+        @Override
+        public void run() {
+            // Moves the current Thread into the background - do we want to do this?
+            android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
+            //TODO: see if the thing android has here is actually important and necessary, because I have no idea what it does
+            for (int i = 0; i < size; i++){ //looping through beats (aka timestamps/columns)
+                for (int j = 0; j < size; j++) { //looping through samples (aka y-axis/scale)
+                    if(bgm.isSelected((j*size)+i)){
+                        Sound s = mSounds.get(bgm.getSample((j*size)+i));
+                        soundPool.play(s.getSoundResourceId(),1,1,1,0,1);//(binary arguments) left speaker, right speaker, priority, looping, speed of playback
+                    }
+                }
+                try{
+                    Thread.sleep(125);
+                } catch(InterruptedException e){
+                    System.out.println("Interrupted");
+                }
+            }
+        }
+    }
 
     public void onClickInstruments(View arg0){
         Button instruments = (Button)findViewById(R.id.instruments);
@@ -244,6 +317,22 @@ public class MainActivity extends ActionBarActivity {
         final PopupWindow popupWindow = new PopupWindow( popupInstrumList,
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         popupWindow.showAtLocation(findViewById(R.id.squareLayout),0, instruments.getWidth(), 0);
+    }
+
+    //TODO: remove if possible
+    public static void enableStrictMode(Context context) {
+        StrictMode.setThreadPolicy(
+                new StrictMode.ThreadPolicy.Builder()
+                        .detectDiskReads()
+                        .detectDiskWrites()
+                        .detectNetwork()
+                        .penaltyLog()
+                        .build());
+        StrictMode.setVmPolicy(
+                new StrictMode.VmPolicy.Builder()
+                        .detectLeakedSqlLiteObjects()
+                        .penaltyLog()
+                        .build());
     }
 
     @Override
