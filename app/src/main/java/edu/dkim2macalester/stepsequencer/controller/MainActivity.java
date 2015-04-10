@@ -195,7 +195,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void play(View v, BooleanGridModel bgm){
-        handleGraphicPlayback(bgm);
+        new Animation(1, bgm);
         Runnable r = new PlayThread(bgm);
         new Thread(r).start();
     }
@@ -242,14 +242,10 @@ public class MainActivity extends ActionBarActivity {
                     @Override
                     public void run() {
                         selectRow(i, bgm);
-                        Log.d("testing", "i is set to column " + i); //TODO: remove me
                     }
                 });
 
-                i++;
-
-                if (i > 14) {
-                    Log.d("testing", "PROBABLY NEVER WILL " + i); //TODO: remove me
+                if (++i > 14) {
                     timer.cancel(); //Terminate the timer thread
                     timer.purge();
                 }
@@ -257,10 +253,6 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-    //TODO: this can definitely be condensed/put somewhere else
-    public void handleGraphicPlayback(BooleanGridModel bgm){ //which sounds like a horrible feature for MMA recordings -
-        new Animation(1, bgm);
-    }
 
     public void selectRow(int i, BooleanGridModel bgm) {
         for (int j = 0; j < size; j++) { //looping through samples (aka y-axis/scale)
