@@ -195,7 +195,6 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void play(View v, BooleanGridModel bgm){
-        new Animation(1, bgm);
         Runnable r = new PlayThread(bgm);
         new Thread(r).start();
     }
@@ -213,45 +212,9 @@ public class MainActivity extends ActionBarActivity {
         gridView.invalidateViews();
     }
 
-
-    public class Animation { //code based on http://bioportal.weizmann.ac.il/course/prog2/tutorial/essential/threads/timer.html
-        Timer timer;
-        private final BooleanGridModel bgm;
-
-        public Animation(int numGrids, BooleanGridModel bgm) { //numGrids - so can play through the number of grids presents in song
-            timer = new Timer();
-            timer.scheduleAtFixedRate(new SelectRowTask(), 0, 125);
-            this.bgm = bgm;
-        }
-
-        class SelectRowTask extends TimerTask {
-            int i = 0;
-
-            public void run() {
-                if (i > 0) {
-                    //if previous row still selected, deselect - this'll leave the last one selected TODO: IN THEORY
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            deselectRow(i, bgm);
-                        }
-                    });
-                }
-
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        selectRow(i, bgm);
-                    }
-                });
-
-                if (++i > 14) {
-                    timer.cancel(); //Terminate the timer thread
-                    timer.purge();
-                }
-            }
-        }
-    }
+    //TODO: FOR CODE GENERALLY
+    //put the two select/deselect calls inside the same UI call (???)
+    //additionally, need to make EVERYTHING work with immutBooleanGridModel instead. there's a LOT there.
 
 
     public void selectRow(int i, BooleanGridModel bgm) {
@@ -266,7 +229,7 @@ public class MainActivity extends ActionBarActivity {
     public void deselectRow(int i, BooleanGridModel bgm) {
         for (int j = 0; j < size; j++) { //looping through samples (aka y-axis/scale)
             if(!bgm.isSelected((j*size)+i)){
-                adapter.editDrawableID(j*size+i, R.drawable.white_square);
+                adapter.editDrawableID(j*size+i, R.drawable.empty_square);
             }
         }
         adapter.notifyDataSetChanged();
@@ -284,9 +247,20 @@ public class MainActivity extends ActionBarActivity {
         @Override
         public void run() {
             // Moves the current Thread into the background - do we want to do this?
+            //unecess as low computation
             android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
             //TODO: see if the thing android has here is actually important and necessary, because I have no idea what it does
             for (int i = 0; i < size; i++){ //looping through beats (aka timestamps/columns)
+
+                final int rowToUpdate = i;
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        selectRow(rowToUpdate, bgm);
+                    }
+                });
+
                 for (int j = 0; j < size; j++) { //looping through samples (aka y-axis/scale)
                     if(bgm.isSelected((j*size)+i)){
                         Sound s = mSounds.get(bgm.getSample((j*size)+i));
@@ -298,6 +272,14 @@ public class MainActivity extends ActionBarActivity {
                 } catch(InterruptedException e){
                     System.out.println("Interrupted");
                 }
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        deselectRow(rowToUpdate, bgm);
+                    }
+                });
+
             }
         }
     }
