@@ -37,6 +37,7 @@ public class MainActivity extends ActionBarActivity {
     private SoundPool soundPool;
     private ArrayList<Sound> mSounds = new ArrayList<>();
 
+    private boolean isPlaying = false; //flag to see whether or not the app is currently playing sound
 
 
     @Override
@@ -200,7 +201,11 @@ public class MainActivity extends ActionBarActivity {
 
     public void play(BooleanGridModel bgm){
         Runnable r = new PlayThread(bgm);
-        new Thread(r).start();
+        if(!isPlaying) {
+            new Thread(r).start();
+        } else {
+            isPlaying = !isPlaying;
+        }
     }
 
 
@@ -245,37 +250,42 @@ public class MainActivity extends ActionBarActivity {
 
         @Override
         public void run() {
-            //TODO: see if the thing android has here is actually important and necessary, because I have no idea what it does
-            for (int i = 0; i < size; i++){ //looping through beats (aka timestamps/columns)
+            isPlaying = true;
+            while (isPlaying) {
+                //TODO: see if the thing android has here is actually important and necessary, because I have no idea what it does
+                for (int i = 0; i < size; i++){ //looping through beats (aka timestamps/columns)
+                    if (!isPlaying) { break; } //breaks play loop
+                    final int rowToUpdate = i;
 
-                final int rowToUpdate = i;
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            selectRow(rowToUpdate, bgm);
+                        }
+                    });
 
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        selectRow(rowToUpdate, bgm);
+                    for (int j = 0; j < size; j++) { //looping through samples (aka y-axis/scale)
+
+                        if(bgm.isSelected((j*size)+i)){
+                            Sound s = mSounds.get(bgm.getSample((j*size)+i));
+                            soundPool.play(s.getSoundResourceId(),1,1,1,0,1);//(binary arguments) left speaker, right speaker, priority, looping, speed of playback
+                        }
                     }
-                });
-
-                for (int j = 0; j < size; j++) { //looping through samples (aka y-axis/scale)
-                    if(bgm.isSelected((j*size)+i)){
-                        Sound s = mSounds.get(bgm.getSample((j*size)+i));
-                        soundPool.play(s.getSoundResourceId(),1,1,1,0,1);//(binary arguments) left speaker, right speaker, priority, looping, speed of playback
+                    //if (!isPlaying) { break; }
+                    try{
+                        Thread.sleep(125);
+                    } catch(InterruptedException e){
+                        System.out.println("Interrupted");
                     }
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            deselectRow(rowToUpdate, bgm);
+                        }
+                    });
+
                 }
-                try{
-                    Thread.sleep(125);
-                } catch(InterruptedException e){
-                    System.out.println("Interrupted");
-                }
-
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        deselectRow(rowToUpdate, bgm);
-                    }
-                });
-
             }
         }
     }
