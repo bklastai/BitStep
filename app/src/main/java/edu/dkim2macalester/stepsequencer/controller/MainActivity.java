@@ -100,7 +100,20 @@ public class MainActivity extends ActionBarActivity {
                 for (BooleanGridModel bgm : song.getBGMList()){
                     BGM = bgm;
                     updateGridItemAdapter(BGM);
-                    play(v, BGM);
+                    play(BGM);
+                }
+                updateGridItemAdapter(song.getCurrentBGM());
+            }
+        });
+
+        final Button clear = (Button) findViewById(R.id.clear);
+        clear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                for (BooleanGridModel bgm : song.getBGMList()){
+                    BGM = new BooleanGridModel();
+                    updateGridItemAdapter(BGM);
+                    song.setCurrentBGM(BGM);
                 }
                 updateGridItemAdapter(song.getCurrentBGM());
             }
@@ -189,10 +202,12 @@ public class MainActivity extends ActionBarActivity {
         mSounds.add(s);
     }
 
-    public void play(View v, BooleanGridModel bgm){
+    public void play(BooleanGridModel bgm){
         Runnable r = new PlayThread(bgm);
         new Thread(r).start();
     }
+
+
 
     public void updateGridItemAdapter(BooleanGridModel bgm){
         for (int i = 0; i < bgm.getBGMSize(); i++){
