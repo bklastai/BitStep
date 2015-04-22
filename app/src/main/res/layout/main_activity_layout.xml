@@ -2,47 +2,71 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#424242"
-    android:orientation="horizontal" >
+    android:orientation="horizontal"
+    android:background="@drawable/background">
 
     <LinearLayout
         android:id="@+id/button_holder"
         android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="match_parent">
-        <Button
-            android:id="@+id/music_options"
-            android:layout_weight="1"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@string/button_musicOptions" />
-        <Button
-            android:id="@+id/instruments"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_weight="10">
+            <Button
+                android:id="@+id/music_options"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/music_options1"
+                android:layout_gravity="center"/>
+        </LinearLayout>
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@string/button_instruments"
-            android:onClick="onClickInstruments" />
-        <Button
-            android:id="@+id/play"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_weight="10">
+            <Button
+                android:id="@+id/instruments"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/instrument_options1"
+                android:layout_gravity="center"/>
+        </LinearLayout>
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@string/button_playPause" />
-        <Button
-            android:id="@+id/clear"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_weight="10">
+            <Button
+                android:id="@+id/play"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/play_button"
+                android:layout_gravity="center"/>
+        </LinearLayout>
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="Clear"/>
+            android:layout_height="wrap_content"
+            android:layout_weight="10">
+            <Button
+                android:id="@+id/clear"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/clear1"
+                android:layout_gravity="center"/>
+        </LinearLayout>
     </LinearLayout>
 
-    <Button
-        android:id="@+id/previous_grid"
-        android:layout_weight="10"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:text="@string/previous"/>
+        android:layout_weight="100">
+        <Button
+            android:id="@+id/previous_grid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/previous1"
+            android:layout_gravity="center"/>
+    </LinearLayout>
 
     <edu.dkim2macalester.stepsequencer.view.MySquareLayout
         android:id= "@+id/squareLayout"
@@ -60,12 +84,18 @@
             android:layout_centerInParent="true"/>
     </edu.dkim2macalester.stepsequencer.view.MySquareLayout>
 
-    <Button
-        android:id="@+id/next_grid"
-        android:layout_weight="15"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:text="@string/next"/>
+        android:layout_weight="100">
+        <Button
+            android:id="@+id/next_grid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/next1"
+            android:layout_gravity="center"/>
+    </LinearLayout>
+
 
 
 </LinearLayout>

@@ -8,16 +8,12 @@ import android.media.SoundPool;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v7.app.ActionBarActivity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
-import android.widget.PopupWindow;
-
 
 import java.util.ArrayList;
 
@@ -64,8 +60,8 @@ public class MainActivity extends ActionBarActivity {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 if (!BGM.isSelected(position)) {
-                    v.setBackgroundResource(R.drawable.white_square);
-                    adapter.editDrawableID(position, R.drawable.white_square);
+                    v.setBackgroundResource(R.drawable.black_square);
+                    adapter.editDrawableID(position, R.drawable.black_square);
                 } else {
                     v.setBackgroundResource(R.drawable.empty_square);
                     adapter.editDrawableID(position, R.drawable.empty_square);
@@ -212,7 +208,7 @@ public class MainActivity extends ActionBarActivity {
     public void updateGridItemAdapter(BooleanGridModel bgm){
         for (int i = 0; i < bgm.getBGMSize(); i++){
             if (bgm.isSelected(i)){
-                adapter.editDrawableID(i, R.drawable.white_square);
+                adapter.editDrawableID(i, R.drawable.black_square);
             }
             else {
                 adapter.editDrawableID(i, R.drawable.empty_square);
@@ -225,7 +221,7 @@ public class MainActivity extends ActionBarActivity {
     public void selectRow(int i, BooleanGridModel bgm) {
         for (int j = 0; j < size; j++) { //looping through samples (aka y-axis/scale)
             if (!bgm.isSelected((j*size)+i)){
-                adapter.editDrawableID((j*size)+i, R.drawable.black_square);
+                adapter.editDrawableID((j*size)+i, R.drawable.grey_square);
             }
         }
         adapter.notifyDataSetChanged();
@@ -284,14 +280,14 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-    public void onClickInstruments(View arg0){
-        Button instruments = (Button)findViewById(R.id.instruments);
-        LayoutInflater layoutInflater = (LayoutInflater)getBaseContext().getSystemService(LAYOUT_INFLATER_SERVICE);
-        View popupInstrumList = layoutInflater.inflate(R.layout.popup, null);
-        final PopupWindow popupWindow = new PopupWindow( popupInstrumList,
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        popupWindow.showAtLocation(findViewById(R.id.squareLayout),0, instruments.getWidth(), 0);
-    }
+//    public void onClickInstruments(View arg0){
+//        Button instruments = (Button)findViewById(R.id.instruments);
+//        LayoutInflater layoutInflater = (LayoutInflater)getBaseContext().getSystemService(LAYOUT_INFLATER_SERVICE);
+//        View popupInstrumList = layoutInflater.inflate(R.layout.popup, null);
+//        final PopupWindow popupWindow = new PopupWindow( popupInstrumList,
+//                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//        popupWindow.showAtLocation(findViewById(R.id.squareLayout),0, instruments.getWidth(), 0);
+//    }
 
     //TODO: remove if possible
     public static void enableStrictMode(Context context) {
