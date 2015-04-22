@@ -56,6 +56,11 @@ public class Song extends Object {
         return BGMList.get(currentBGMIndex);
     }
 
+    //for updating, needed because the BGMs are immutable, we create a new one for each change.
+    //called from whenever a button is touched, similar to updating the view.
+    public void setCurrentBGM(BooleanGridModel BGM){
+        BGMList.set(currentBGMIndex, BGM);
+    }
 
     public int getBGMListSize(){
         return BGMList.size();

@@ -1,26 +1,42 @@
-package edu.dkim2macalester.stepsequencer.model;
+ package edu.dkim2macalester.stepsequencer.model;
 
 /**
  * Created by mju on 3/23/2015.
  */
-public class BooleanGridModel extends Object {
 
-    int width = 16;
-    int height = 16;
-    private boolean[] selections = new boolean[width*height];
+public final class BooleanGridModel extends Object {
 
-    public BooleanGridModel(){
-        initSelection();
-    }
+    private final int width = 16;
+    private final int height = 16;
+    private final boolean[] selections;
 
-    public void initSelection(){
-        for (int i = 0; i < selections.length; i++){
-            selections[i]= false;
+    public BooleanGridModel(){ //if no model passed in, inits to all-0 grid
+        boolean[] temp = new boolean[width*height];
+        for (int i = 0; i < temp.length; i++){
+            temp[i]= false;
         }
+        selections = temp;
     }
 
-    public void setSelected(int position, boolean NOTisSelected){
-        selections[position] = NOTisSelected;
+    public BooleanGridModel(boolean[] temp){//takes a
+        selections = temp;
+    }
+
+
+    public BooleanGridModel setSelected(int position){
+        //new model to reflect changes
+        boolean[] temp = new boolean[width*height];
+
+        //setting identical to old BGM model aside from desired change
+        for (int i = 0; i < temp.length; i++){
+                temp[i]= this.isSelected(i);
+        }
+
+        //making the change
+        temp[position] = !this.isSelected(position);
+
+        BooleanGridModel newBGM = new BooleanGridModel(temp);
+        return newBGM;
     }
 
     public int getSample(int position) { return (position - position % width) / height; }
@@ -35,7 +51,4 @@ public class BooleanGridModel extends Object {
         return selections.length;
     }
 
-    public boolean[] getBGM(){
-        return this.selections;
-    }
 }

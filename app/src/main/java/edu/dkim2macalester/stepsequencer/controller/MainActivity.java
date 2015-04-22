@@ -8,7 +8,6 @@ import android.media.SoundPool;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,9 +18,6 @@ import android.widget.Button;
 import android.widget.GridView;
 import android.widget.PopupWindow;
 
-
-import java.util.Timer;
-import java.util.TimerTask;
 
 import java.util.ArrayList;
 
@@ -74,12 +70,12 @@ public class MainActivity extends ActionBarActivity {
                     v.setBackgroundResource(R.drawable.empty_square);
                     adapter.editDrawableID(position, R.drawable.empty_square);
                 }
-                BGM.setSelected(position, !BGM.isSelected(position));
+                BGM = BGM.setSelected(position);
+                song.setCurrentBGM(BGM); //updates song with new BGM
             }
         });
 
         final Button next = (Button) findViewById(R.id.next_grid);
-//        next.setBackgroundResource(R.drawable.next1);
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -89,7 +85,6 @@ public class MainActivity extends ActionBarActivity {
         });
 
         final Button previous = (Button) findViewById(R.id.previous_grid);
-//        previous.setBackgroundResource(R.drawable.previous1);
         previous.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -212,11 +207,6 @@ public class MainActivity extends ActionBarActivity {
         gridView.invalidateViews();
     }
 
-    //TODO: FOR CODE GENERALLY
-    //put the two select/deselect calls inside the same UI call (???)
-    //additionally, need to make EVERYTHING work with immutBooleanGridModel instead. there's a LOT there.
-
-
     public void selectRow(int i, BooleanGridModel bgm) {
         for (int j = 0; j < size; j++) { //looping through samples (aka y-axis/scale)
             if (!bgm.isSelected((j*size)+i)){
@@ -237,8 +227,6 @@ public class MainActivity extends ActionBarActivity {
 
     class PlayThread implements Runnable {
         private final BooleanGridModel bgm;
-        //TODO: does the model actually have to be immutable if this is happening?
-        //on second thought - will it work this way at all if we want it to be able to change mid-stream?
 
         public PlayThread (BooleanGridModel bgm) {
             this.bgm = bgm;
@@ -246,9 +234,6 @@ public class MainActivity extends ActionBarActivity {
 
         @Override
         public void run() {
-            // Moves the current Thread into the background - do we want to do this?
-            //unecess as low computation
-            android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
             //TODO: see if the thing android has here is actually important and necessary, because I have no idea what it does
             for (int i = 0; i < size; i++){ //looping through beats (aka timestamps/columns)
 
