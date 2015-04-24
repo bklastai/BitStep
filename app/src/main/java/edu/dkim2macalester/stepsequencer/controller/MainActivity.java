@@ -99,12 +99,7 @@ public class MainActivity extends ActionBarActivity {
         play.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                for (BooleanGridModel bgm : song.getBGMList()){
-                    BGM = bgm;
-                    updateGridItemAdapter(BGM);
-                    play(BGM);
-                }
-                updateGridItemAdapter(song.getCurrentBGM());
+                play();
             }
         });
 
@@ -204,8 +199,8 @@ public class MainActivity extends ActionBarActivity {
         mSounds.add(s);
     }
 
-    public void play(BooleanGridModel bgm){
-        Runnable r = new PlayThread(bgm);
+    public void play(){
+        Runnable r = new PlayThread();
         if(!isPlaying) {
             new Thread(r).start();
         } else {
@@ -249,61 +244,63 @@ public class MainActivity extends ActionBarActivity {
     class PlayThread implements Runnable {
         private BooleanGridModel bgm;
 
-        public PlayThread (BooleanGridModel bgm) {
-            this.bgm = bgm;
-        }
-
         @Override
         public void run() {
             isPlaying = true;
+            outerloop:
             while (isPlaying) {
-                //TODO: see if the thing android has here is actually important and necessary, because I have no idea what it does
-                for (int i = 0; i < size; i++){ //looping through beats (aka timestamps/columns)
-                    if (!isPlaying) { break; } //breaks play loop
-                    bgm = song.getCurrentBGM(); //pulls updated grid if changes have been made
-                    final int rowToUpdate = i;
+                for (int k = 0; k < song.getBGMListSize(); k++) { //TODO WORRIED about threadsafety of this code
+                    bgm = song.getBGMFromIndex(k); //get the kth grid
 
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            selectRow(rowToUpdate, bgm);
+                            updateGridItemAdapter(bgm);
                         }
                     });
 
-                    for (int j = 0; j < size; j++) { //looping through samples (aka y-axis/scale)
+                    //TODO: see if the thing android has here is actually important and necessary, because I have no idea what it does
+                    for (int i = 0; i < size; i++){ //looping through beats (aka timestamps/columns)
+                        if (!isPlaying) { break outerloop; } //breaks play loop
+                        bgm = song.getBGMFromIndex(k); //pulls updated grid if changes have been made
 
-                        if(bgm.isSelected((j*size)+i)){
-                            Sound s = mSounds.get(bgm.getSample((j*size)+i));
-                            soundPool.play(s.getSoundResourceId(),1,1,1,0,1);//(binary arguments) left speaker, right speaker, priority, looping, speed of playback
+                        final int rowToUpdate = i;
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                selectRow(rowToUpdate, bgm);
+                            }
+                        });
+
+                        for (int j = 0; j < size; j++) { //looping through samples (aka y-axis/scale)
+
+                            if(bgm.isSelected((j*size)+i)){
+                                Sound s = mSounds.get(bgm.getSample((j*size)+i));
+                                soundPool.play(s.getSoundResourceId(),1,1,1,0,1);//(binary arguments) left speaker, right speaker, priority, looping, speed of playback
+                            }
                         }
-                    }
-                    //if (!isPlaying) { break; }
-                    try{
-                        Thread.sleep(125);
-                    } catch(InterruptedException e){
-                        System.out.println("Interrupted");
-                    }
-
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            deselectRow(rowToUpdate, bgm);
+                        //if (!isPlaying) { break; }
+                        try{
+                            Thread.sleep(125);
+                        } catch(InterruptedException e){
+                            System.out.println("Interrupted");
                         }
-                    });
 
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                deselectRow(rowToUpdate, bgm);
+                            }
+                        });
+
+                    }
+                    //bgm = song.getNextBGM();
                 }
             }
+
         }
     }
-
-//    public void onClickInstruments(View arg0){
-//        Button instruments = (Button)findViewById(R.id.instruments);
-//        LayoutInflater layoutInflater = (LayoutInflater)getBaseContext().getSystemService(LAYOUT_INFLATER_SERVICE);
-//        View popupInstrumList = layoutInflater.inflate(R.layout.popup, null);
-//        final PopupWindow popupWindow = new PopupWindow( popupInstrumList,
-//                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-//        popupWindow.showAtLocation(findViewById(R.id.squareLayout),0, instruments.getWidth(), 0);
-//    }
 
     //TODO: remove if possible
     public static void enableStrictMode(Context context) {

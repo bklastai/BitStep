@@ -57,15 +57,19 @@ public class Song extends Object {
         return BGMList.get(currentBGMIndex);
     }
 
+    public BooleanGridModel getBGMFromIndex(int k){
+        return BGMList.get(k);
+    }
+
     //for updating, needed because the BGMs are immutable, we create a new one for each change.
     //called from whenever a button is touched, similar to updating the view.
     public void setCurrentBGM(BooleanGridModel BGM){
         BGMList.set(currentBGMIndex, BGM);
     }
 
-    private int getBGMListSize(){
+    public int getBGMListSize(){
         return BGMList.size();
-    } //marking private for the moment, can change if needed -
+    }
 
     public ArrayList<BooleanGridModel> getBGMList(){
         return this.BGMList;
