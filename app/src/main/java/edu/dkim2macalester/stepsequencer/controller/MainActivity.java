@@ -251,6 +251,8 @@ public class MainActivity extends ActionBarActivity {
             while (isPlaying) {
                 for (int k = 0; k < song.getBGMListSize(); k++) { //TODO WORRIED about threadsafety of this code
                     bgm = song.getBGMFromIndex(k); //get the kth grid
+                    song.setCurrentBGMByIndex(k);
+                    final int index = k;
 
                     runOnUiThread(new Runnable() {
                         @Override
@@ -269,7 +271,9 @@ public class MainActivity extends ActionBarActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                selectRow(rowToUpdate, bgm);
+                                if (song.getCurrentBGMIndex() == index) {
+                                    selectRow(rowToUpdate, bgm);
+                                }
                             }
                         });
 
@@ -290,7 +294,9 @@ public class MainActivity extends ActionBarActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                deselectRow(rowToUpdate, bgm);
+                                if (song.getCurrentBGMIndex() == index) {
+                                    deselectRow(rowToUpdate, bgm);
+                                }
                             }
                         });
 

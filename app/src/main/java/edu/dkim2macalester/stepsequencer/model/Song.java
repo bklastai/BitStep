@@ -67,8 +67,17 @@ public class Song extends Object {
         BGMList.set(currentBGMIndex, BGM);
     }
 
+    //probably there's a cleaner way to do this, but need to set by index in play function
+    public void setCurrentBGMByIndex(int k){
+        currentBGMIndex = k;
+    }
+
     public int getBGMListSize(){
         return BGMList.size();
+    }
+
+    public int getCurrentBGMIndex (){
+        return currentBGMIndex;
     }
 
     public ArrayList<BooleanGridModel> getBGMList(){
