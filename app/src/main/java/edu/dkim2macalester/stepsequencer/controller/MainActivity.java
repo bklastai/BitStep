@@ -68,6 +68,11 @@ public class MainActivity extends ActionBarActivity {
                     adapter.editDrawableID(position, R.drawable.empty_square);
                 }
                 BGM = BGM.setSelected(position);
+
+                //for playing sound on touch
+                Sound s = mSounds.get(BGM.getSample(position));
+                soundPool.play(s.getSoundResourceId(),1,1,1,0,1);//(binary arguments) left speaker, right speaker, priority, looping, speed of playback
+
                 song.setCurrentBGM(BGM); //updates song with new BGM
             }
         });
@@ -242,7 +247,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
     class PlayThread implements Runnable {
-        private final BooleanGridModel bgm;
+        private BooleanGridModel bgm;
 
         public PlayThread (BooleanGridModel bgm) {
             this.bgm = bgm;
@@ -255,6 +260,7 @@ public class MainActivity extends ActionBarActivity {
                 //TODO: see if the thing android has here is actually important and necessary, because I have no idea what it does
                 for (int i = 0; i < size; i++){ //looping through beats (aka timestamps/columns)
                     if (!isPlaying) { break; } //breaks play loop
+                    bgm = song.getCurrentBGM(); //pulls updated grid if changes have been made
                     final int rowToUpdate = i;
 
                     runOnUiThread(new Runnable() {
