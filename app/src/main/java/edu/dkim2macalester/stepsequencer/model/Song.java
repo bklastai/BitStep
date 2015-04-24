@@ -20,23 +20,24 @@ public class Song extends Object {
     public void addBGM(){
         BooleanGridModel bgm = new BooleanGridModel();
         BGMList.add(bgm);
-        BGMList.set(BGMList.size()-1, bgm);
+        BGMList.set(BGMList.size() - 1, bgm);
     }
 
 
     public BooleanGridModel getNextBGM(){
-        if (BGMList.size()-1>currentBGMIndex){
+        if (BGMList.size() - 1 > currentBGMIndex){ //if there is a next grid, then return it!
             currentBGMIndex++;
             return BGMList.get(currentBGMIndex);
-        }
-        else {
+        } else if (getBGMListSize() < 5) {  //if there isn't, make a new one - but creates no more than five grids total
             addBGM();
             return getNextBGM();
+        } else { //if there are already five, not creating a new one, returns the one you're on
+            return getCurrentBGM();
         }
     }
 
     public BooleanGridModel getPreviousBGM(){
-        if (currentBGMIndex>0){
+        if (currentBGMIndex > 0){
             currentBGMIndex--;
             return BGMList.get(currentBGMIndex);
         }
@@ -62,9 +63,9 @@ public class Song extends Object {
         BGMList.set(currentBGMIndex, BGM);
     }
 
-    public int getBGMListSize(){
+    private int getBGMListSize(){
         return BGMList.size();
-    }
+    } //marking private for the moment, can change if needed -
 
     public ArrayList<BooleanGridModel> getBGMList(){
         return this.BGMList;
