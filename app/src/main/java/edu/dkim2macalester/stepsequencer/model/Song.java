@@ -76,6 +76,10 @@ public class Song extends Object {
         return BGMList.size();
     }
 
+    public void deleteCurrentBGM() {
+        BGMList.remove(currentBGMIndex);
+    }
+
     public int getCurrentBGMIndex (){
         return currentBGMIndex;
     }
