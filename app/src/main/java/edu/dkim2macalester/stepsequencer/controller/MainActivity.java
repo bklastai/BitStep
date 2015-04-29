@@ -17,6 +17,7 @@ import android.widget.GridView;
 
 import java.util.ArrayList;
 
+
 import edu.dkim2macalester.stepsequencer.R;
 import edu.dkim2macalester.stepsequencer.model.BooleanGridModel;
 import edu.dkim2macalester.stepsequencer.model.Song;
@@ -27,6 +28,7 @@ import edu.dkim2macalester.stepsequencer.view.GridItemAdapter;
 public class MainActivity extends ActionBarActivity {
 
     private int size = 16;
+    private int tempo = 120;
 
     private GridView gridView;
     private GridItemAdapter adapter;
@@ -285,8 +287,10 @@ public class MainActivity extends ActionBarActivity {
                             }
                         }
                         //if (!isPlaying) { break; }
+                        //tempo (bpm) is converted into milliseconds
+
                         try{
-                            Thread.sleep(125);
+                            Thread.sleep(60000/(tempo*4));
                         } catch(InterruptedException e){
                             System.out.println("Interrupted");
                         }
