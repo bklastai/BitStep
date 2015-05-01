@@ -64,7 +64,7 @@ public class MainActivity extends ActionBarActivity {
 //        soundPool = new SoundPool(16, AudioManager.STREAM_MUSIC, 0);
         instrument.initiateSound();
 //        loadSounds();
-        instrument.loadKitOne(this);
+        instrument.loadDeepHouseKit(this);
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
@@ -80,7 +80,7 @@ public class MainActivity extends ActionBarActivity {
                 //for playing sound on touch
                 Sound s = (Sound) instrument.accessSoundArray().get(BGM.getSample(position));
 //              Sound s = mSounds.get(bgm.getSample((j*size)+i));
-                instrument.accessSoundPool().play(s.getSoundResourceId(),1,1,1,0,1);
+                instrument.accessSoundPool().play(s.getSoundResourceId(),1,1,3,0,1);
 //                Sound s = mSounds.get(BGM.getSample(position));
 //                soundPool.play(s.getSoundResourceId(),1,1,1,0,1);//(binary arguments) left speaker, right speaker, priority, looping, speed of playback
 
@@ -296,7 +296,7 @@ public class MainActivity extends ActionBarActivity {
                             if(bgm.isSelected((j*size)+i)){
                                 Sound s = (Sound) instrument.accessSoundArray().get(bgm.getSample((j*size)+i));
 //                                Sound s = mSounds.get(bgm.getSample((j*size)+i));
-                                instrument.accessSoundPool().play(s.getSoundResourceId(),1,1,1,0,1);
+                                instrument.accessSoundPool().play(s.getSoundResourceId(),1,1,3,0,1);
 //                                soundPool.play(s.getSoundResourceId(),1,1,1,0,1);//(binary arguments) left speaker, right speaker, priority, looping, speed of playback
                             }
                         }
