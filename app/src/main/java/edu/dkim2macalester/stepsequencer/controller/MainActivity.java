@@ -1,6 +1,7 @@
 package edu.dkim2macalester.stepsequencer.controller;
 
 
+
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.media.AudioManager;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 
 import edu.dkim2macalester.stepsequencer.R;
 import edu.dkim2macalester.stepsequencer.model.BooleanGridModel;
+import edu.dkim2macalester.stepsequencer.model.Instrument;
 import edu.dkim2macalester.stepsequencer.model.Song;
 import edu.dkim2macalester.stepsequencer.model.Sound;
 import edu.dkim2macalester.stepsequencer.view.GridItemAdapter;
@@ -30,14 +32,16 @@ public class MainActivity extends ActionBarActivity {
     private int size = 16;
     private int tempo = 120;
 
+
     private GridView gridView;
     private GridItemAdapter adapter;
 
+    private Instrument instrument = new Instrument();
     private Song song = new Song();
     private BooleanGridModel BGM;
 
-    private SoundPool soundPool;
-    private ArrayList<Sound> mSounds = new ArrayList<>();
+//    public SoundPool soundPool;
+//    public ArrayList<Sound> mSounds = new ArrayList<>();
 
     private boolean isPlaying = false; //flag to see whether or not the app is currently playing sound
 
@@ -57,8 +61,10 @@ public class MainActivity extends ActionBarActivity {
         adapter = new GridItemAdapter(this);
         gridView.setAdapter(adapter);
 
-        soundPool = new SoundPool(16, AudioManager.STREAM_MUSIC, 0);
-        loadSounds();
+//        soundPool = new SoundPool(16, AudioManager.STREAM_MUSIC, 0);
+        instrument.initiateSound();
+//        loadSounds();
+        instrument.loadKitOne(this);
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
@@ -72,8 +78,11 @@ public class MainActivity extends ActionBarActivity {
                 BGM = BGM.setSelected(position);
 
                 //for playing sound on touch
-                Sound s = mSounds.get(BGM.getSample(position));
-                soundPool.play(s.getSoundResourceId(),1,1,1,0,1);//(binary arguments) left speaker, right speaker, priority, looping, speed of playback
+                Sound s = (Sound) instrument.accessSoundArray().get(BGM.getSample(position));
+//              Sound s = mSounds.get(bgm.getSample((j*size)+i));
+                instrument.accessSoundPool().play(s.getSoundResourceId(),1,1,1,0,1);
+//                Sound s = mSounds.get(BGM.getSample(position));
+//                soundPool.play(s.getSoundResourceId(),1,1,1,0,1);//(binary arguments) left speaker, right speaker, priority, looping, speed of playback
 
                 song.setCurrentBGM(BGM); //updates song with new BGM
             }
@@ -119,87 +128,90 @@ public class MainActivity extends ActionBarActivity {
         });
     }
 
-    private void loadSounds() {
-        Sound s = new Sound();
-        s.setDescription("kick");
-        s.setSoundResourceId(soundPool.load(this,R.raw.kick,1));
-        mSounds.add(s);
 
-        s = new Sound();
-        s.setDescription("clap");
-        s.setSoundResourceId(soundPool.load(this,R.raw.clap,1));
-        mSounds.add(s);
 
-        s = new Sound();
-        s.setDescription("snare");
-        s.setSoundResourceId(soundPool.load(this,R.raw.snare,1));
-        mSounds.add(s);
 
-        s = new Sound();
-        s.setDescription("rim");
-        s.setSoundResourceId(soundPool.load(this,R.raw.rim,1));
-        mSounds.add(s);
-
-        s = new Sound();
-        s.setDescription("cowbell");
-        s.setSoundResourceId(soundPool.load(this,R.raw.cowbell,1));
-        mSounds.add(s);
-
-        s = new Sound();
-        s.setDescription("hh_closed");
-        s.setSoundResourceId(soundPool.load(this,R.raw.hhclosed,1));
-        mSounds.add(s);
-
-        s = new Sound();
-        s.setDescription("hh_open");
-        s.setSoundResourceId(soundPool.load(this,R.raw.hhopen,1));
-        mSounds.add(s);
-
-        s = new Sound();
-        s.setDescription("conga_low");
-        s.setSoundResourceId(soundPool.load(this,R.raw.congalo,1));
-        mSounds.add(s);
-
-        s = new Sound();
-        s.setDescription("conga_med");
-        s.setSoundResourceId(soundPool.load(this,R.raw.congamed,1));
-        mSounds.add(s);
-
-        s = new Sound();
-        s.setDescription("conga_hi");
-        s.setSoundResourceId(soundPool.load(this,R.raw.congahi,1));
-        mSounds.add(s);
-
-        s = new Sound();
-        s.setDescription("tom_lo");
-        s.setSoundResourceId(soundPool.load(this,R.raw.tomlo,1));
-        mSounds.add(s);
-
-        s = new Sound();
-        s.setDescription("tom_med");
-        s.setSoundResourceId(soundPool.load(this,R.raw.tommed,1));
-        mSounds.add(s);
-
-        s = new Sound();
-        s.setDescription("tom_hi");
-        s.setSoundResourceId(soundPool.load(this,R.raw.tomhi,1));
-        mSounds.add(s);
-
-        s = new Sound();
-        s.setDescription("cymbal_1");
-        s.setSoundResourceId(soundPool.load(this,R.raw.cymbal1,1));
-        mSounds.add(s);
-
-        s = new Sound();
-        s.setDescription("cymbal_2");
-        s.setSoundResourceId(soundPool.load(this,R.raw.cymbal2,1));
-        mSounds.add(s);
-
-        s = new Sound();
-        s.setDescription("cymbal_3");
-        s.setSoundResourceId(soundPool.load(this,R.raw.cymbal3,1));
-        mSounds.add(s);
-    }
+//    private void loadSounds() {
+//        Sound s = new Sound();
+//        s.setDescription("kick");
+//        s.setSoundResourceId(soundPool.load(this,R.raw.kick,1));
+//        mSounds.add(s);
+//
+//        s = new Sound();
+//        s.setDescription("clap");
+//        s.setSoundResourceId(soundPool.load(this,R.raw.clap,1));
+//        mSounds.add(s);
+//
+//        s = new Sound();
+//        s.setDescription("snare");
+//        s.setSoundResourceId(soundPool.load(this,R.raw.snare,1));
+//        mSounds.add(s);
+//
+//        s = new Sound();
+//        s.setDescription("rim");
+//        s.setSoundResourceId(soundPool.load(this,R.raw.rim,1));
+//        mSounds.add(s);
+//
+//        s = new Sound();
+//        s.setDescription("cowbell");
+//        s.setSoundResourceId(soundPool.load(this,R.raw.cowbell,1));
+//        mSounds.add(s);
+//
+//        s = new Sound();
+//        s.setDescription("hh_closed");
+//        s.setSoundResourceId(soundPool.load(this,R.raw.hhclosed,1));
+//        mSounds.add(s);
+//
+//        s = new Sound();
+//        s.setDescription("hh_open");
+//        s.setSoundResourceId(soundPool.load(this,R.raw.hhopen,1));
+//        mSounds.add(s);
+//
+//        s = new Sound();
+//        s.setDescription("conga_low");
+//        s.setSoundResourceId(soundPool.load(this,R.raw.congalo,1));
+//        mSounds.add(s);
+//
+//        s = new Sound();
+//        s.setDescription("conga_med");
+//        s.setSoundResourceId(soundPool.load(this,R.raw.congamed,1));
+//        mSounds.add(s);
+//
+//        s = new Sound();
+//        s.setDescription("conga_hi");
+//        s.setSoundResourceId(soundPool.load(this,R.raw.congahi,1));
+//        mSounds.add(s);
+//
+//        s = new Sound();
+//        s.setDescription("tom_lo");
+//        s.setSoundResourceId(soundPool.load(this,R.raw.tomlo,1));
+//        mSounds.add(s);
+//
+//        s = new Sound();
+//        s.setDescription("tom_med");
+//        s.setSoundResourceId(soundPool.load(this,R.raw.tommed,1));
+//        mSounds.add(s);
+//
+//        s = new Sound();
+//        s.setDescription("tom_hi");
+//        s.setSoundResourceId(soundPool.load(this,R.raw.tomhi,1));
+//        mSounds.add(s);
+//
+//        s = new Sound();
+//        s.setDescription("cymbal_1");
+//        s.setSoundResourceId(soundPool.load(this,R.raw.cymbal1,1));
+//        mSounds.add(s);
+//
+//        s = new Sound();
+//        s.setDescription("cymbal_2");
+//        s.setSoundResourceId(soundPool.load(this,R.raw.cymbal2,1));
+//        mSounds.add(s);
+//
+//        s = new Sound();
+//        s.setDescription("cymbal_3");
+//        s.setSoundResourceId(soundPool.load(this,R.raw.cymbal3,1));
+//        mSounds.add(s);
+//    }
 
     public void play(){
         Runnable r = new PlayThread();
@@ -282,8 +294,10 @@ public class MainActivity extends ActionBarActivity {
                         for (int j = 0; j < size; j++) { //looping through samples (aka y-axis/scale)
 
                             if(bgm.isSelected((j*size)+i)){
-                                Sound s = mSounds.get(bgm.getSample((j*size)+i));
-                                soundPool.play(s.getSoundResourceId(),1,1,1,0,1);//(binary arguments) left speaker, right speaker, priority, looping, speed of playback
+                                Sound s = (Sound) instrument.accessSoundArray().get(bgm.getSample((j*size)+i));
+//                                Sound s = mSounds.get(bgm.getSample((j*size)+i));
+                                instrument.accessSoundPool().play(s.getSoundResourceId(),1,1,1,0,1);
+//                                soundPool.play(s.getSoundResourceId(),1,1,1,0,1);//(binary arguments) left speaker, right speaker, priority, looping, speed of playback
                             }
                         }
                         //if (!isPlaying) { break; }
