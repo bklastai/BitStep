@@ -2,9 +2,7 @@ package edu.dkim2macalester.stepsequencer.controller;
 
 
 
-import android.content.Context;
 import android.content.pm.ActivityInfo;
-import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -16,7 +14,6 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
 
-import java.util.ArrayList;
 
 
 import edu.dkim2macalester.stepsequencer.R;
@@ -32,7 +29,6 @@ public class MainActivity extends ActionBarActivity {
     private int size = 16;
     private int tempo = 120;
 
-
     private GridView gridView;
     private GridItemAdapter adapter;
 
@@ -43,12 +39,11 @@ public class MainActivity extends ActionBarActivity {
 //    public SoundPool soundPool;
 //    public ArrayList<Sound> mSounds = new ArrayList<>();
 
+    //DO NOT EVER EVER USE THIS VARIABLE. instead use methods checkPlaying and setPlaying - for threadsafety reasons
     private boolean isPlaying = false; //flag to see whether or not the app is currently playing sound
-
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
-        enableStrictMode(this);
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         setContentView(R.layout.main_activity_layout);
@@ -118,19 +113,15 @@ public class MainActivity extends ActionBarActivity {
         clear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                for (BooleanGridModel bgm : song.getBGMList()){
-                    BGM = new BooleanGridModel();
-                    updateGridItemAdapter(BGM);
-                    song.setCurrentBGM(BGM);
-                }
+                BGM = new BooleanGridModel();
+                updateGridItemAdapter(BGM);
+                song.setCurrentBGM(BGM);
                 updateGridItemAdapter(song.getCurrentBGM());
             }
         });
     }
 
-
-
-
+    //TODO delete all?
 //    private void loadSounds() {
 //        Sound s = new Sound();
 //        s.setDescription("kick");
@@ -215,14 +206,12 @@ public class MainActivity extends ActionBarActivity {
 
     public void play(){
         Runnable r = new PlayThread();
-        if(!isPlaying) {
+        if(!checkPlaying()) {
             new Thread(r).start();
         } else {
-            isPlaying = !isPlaying;
+            setPlaying(false);
         }
     }
-
-
 
     public void updateGridItemAdapter(BooleanGridModel bgm){
         for (int i = 0; i < bgm.getBGMSize(); i++){
@@ -237,19 +226,12 @@ public class MainActivity extends ActionBarActivity {
         gridView.invalidateViews();
     }
 
-    public void selectRow(int i, BooleanGridModel bgm) {
+    public void colorRow(int i, BooleanGridModel bgm, boolean selected) {
         for (int j = 0; j < size; j++) { //looping through samples (aka y-axis/scale)
             if (!bgm.isSelected((j*size)+i)){
-                adapter.editDrawableID((j*size)+i, R.drawable.grey_square);
-            }
-        }
-        adapter.notifyDataSetChanged();
-    }
-
-    public void deselectRow(int i, BooleanGridModel bgm) {
-        for (int j = 0; j < size; j++) { //looping through samples (aka y-axis/scale)
-            if(!bgm.isSelected((j*size)+i)){
-                adapter.editDrawableID(j*size+i, R.drawable.empty_square);
+                if (selected) {
+                    adapter.editDrawableID((j*size)+i, R.drawable.grey_square);
+                } else { adapter.editDrawableID(j*size+i, R.drawable.empty_square);}
             }
         }
         adapter.notifyDataSetChanged();
@@ -260,86 +242,87 @@ public class MainActivity extends ActionBarActivity {
 
         @Override
         public void run() {
-            isPlaying = true;
-            outerloop:
-            while (isPlaying) {
-                for (int k = 0; k < song.getBGMListSize(); k++) { //TODO WORRIED about threadsafety of this code
-                    bgm = song.getBGMFromIndex(k); //get the kth grid
-                    song.setCurrentBGMByIndex(k);
-                    final int index = k;
+            setPlaying(true);
 
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            updateGridItemAdapter(bgm);
-                        }
-                    });
-
-                    //TODO: see if the thing android has here is actually important and necessary, because I have no idea what it does
-                    for (int i = 0; i < size; i++){ //looping through beats (aka timestamps/columns)
-                        if (!isPlaying) { break outerloop; } //breaks play loop
-                        bgm = song.getBGMFromIndex(k); //pulls updated grid if changes have been made
-
-                        final int rowToUpdate = i;
-
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (song.getCurrentBGMIndex() == index) {
-                                    selectRow(rowToUpdate, bgm);
-                                }
-                            }
-                        });
-
-                        for (int j = 0; j < size; j++) { //looping through samples (aka y-axis/scale)
-
-                            if(bgm.isSelected((j*size)+i)){
-                                Sound s = (Sound) instrument.accessSoundArray().get(bgm.getSample((j*size)+i));
-//                                Sound s = mSounds.get(bgm.getSample((j*size)+i));
-                                instrument.accessSoundPool().play(s.getSoundResourceId(),1,1,3,0,1);
-//                                soundPool.play(s.getSoundResourceId(),1,1,1,0,1);//(binary arguments) left speaker, right speaker, priority, looping, speed of playback
-                            }
-                        }
-                        //if (!isPlaying) { break; }
-                        //tempo (bpm) is converted into milliseconds
-
-                        try{
-                            Thread.sleep(60000/(tempo*4));
-                        } catch(InterruptedException e){
-                            System.out.println("Interrupted");
-                        }
-
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (song.getCurrentBGMIndex() == index) {
-                                    deselectRow(rowToUpdate, bgm);
-                                }
-                            }
-                        });
-
-                    }
-                    //bgm = song.getNextBGM();
-                }
+            while (checkPlaying()) {
+                if (playSong()) break;
             }
 
         }
+
+        private boolean playSong() {
+            for (int k = 0; k < song.getBGMListSize(); k++) { //TODO WORRIED about threadsafety of this code wrt Song
+                bgm = song.getBGMFromIndex(k); //get the kth grid
+                song.setCurrentBGMByIndex(k);
+
+                switchUiNextGrid();
+
+                if (playGrid(k)) return true;
+                //bgm = song.getNextBGM();
+            }
+            return false;
+        }
+
+        private void switchUiNextGrid() {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    updateGridItemAdapter(bgm);
+                }
+            });
+        }
+
+        private boolean playGrid(final int gridNum) {
+            for (int i = 0; i < size; i++){ //looping through beats (aka timestamps/columns)
+                if (!checkPlaying()) { //breaks play loop if the user has pressed pause
+                    return true;
+                }
+
+                bgm = song.getBGMFromIndex(gridNum); //pulls updated grid if changes have been made
+                playBeat(gridNum, i);
+            }
+            return false;
+        }
+
+        private void playBeat(int gridNum, int beatNum) {
+            highlightBeat(gridNum, beatNum, true); //true means highlight the beat
+
+            for (int j = 0; j < size; j++) { //looping through samples (aka y-axis/scale)
+                if(bgm.isSelected((j * size) + beatNum)){
+                    Sound s = (Sound) instrument.accessSoundArray().get(bgm.getSample((j * size) + beatNum));
+//                                Sound s = mSounds.get(bgm.getSample((j*size)+i));
+                    instrument.accessSoundPool().play(s.getSoundResourceId(),1,1,3,0,1); //(binary arguments) left speaker, right speaker, priority, looping, speed of playback
+//                                soundPool.play(s.getSoundResourceId(),1,1,1,0,1);
+                }
+            }
+
+            try{
+                Thread.sleep(60000 / (tempo * 4)); //tempo (bpm) is converted into milliseconds
+            } catch(InterruptedException e){
+                System.out.println("Interrupted");
+            }
+
+            highlightBeat(gridNum, beatNum, false); //false means unhighlight the beat
+        }
+
+        private void highlightBeat(final int gridNum, final int beatNum, final boolean highlighted) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (song.getCurrentBGMIndex() == gridNum) {
+                        colorRow(beatNum, bgm, highlighted);
+                    }
+                }
+            });
+        }
     }
 
-    //TODO: remove if possible
-    public static void enableStrictMode(Context context) {
-        StrictMode.setThreadPolicy(
-                new StrictMode.ThreadPolicy.Builder()
-                        .detectDiskReads()
-                        .detectDiskWrites()
-                        .detectNetwork()
-                        .penaltyLog()
-                        .build());
-        StrictMode.setVmPolicy(
-                new StrictMode.VmPolicy.Builder()
-                        .detectLeakedSqlLiteObjects()
-                        .penaltyLog()
-                        .build());
+    private synchronized boolean checkPlaying(){
+        return isPlaying;
+    }
+
+    private synchronized void setPlaying(boolean state){
+      isPlaying = state;
     }
 
     @Override
