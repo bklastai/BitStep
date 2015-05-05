@@ -87,8 +87,10 @@ public class MainActivity extends ActionBarActivity {
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                BGM = song.getNextBGM();
-                updateGridItemAdapter(BGM);
+                if (!checkPlaying()) {
+                    BGM = song.getNextBGM();
+                    updateGridItemAdapter(BGM);
+                }
             }
         });
 
@@ -96,8 +98,10 @@ public class MainActivity extends ActionBarActivity {
         previous.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                BGM = song.getPreviousBGM();
-                updateGridItemAdapter(BGM);
+                if (!checkPlaying()) {
+                    BGM = song.getPreviousBGM();
+                    updateGridItemAdapter(BGM);
+                }
             }
         });
 
@@ -105,7 +109,12 @@ public class MainActivity extends ActionBarActivity {
         play.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                play();
+                Runnable r = new PlayThread();
+                if(!checkPlaying()) {
+                    new Thread(r).start();
+                } else {
+                    setPlaying(false);
+                }
             }
         });
 
@@ -204,15 +213,6 @@ public class MainActivity extends ActionBarActivity {
 //        mSounds.add(s);
 //    }
 
-    public void play(){
-        Runnable r = new PlayThread();
-        if(!checkPlaying()) {
-            new Thread(r).start();
-        } else {
-            setPlaying(false);
-        }
-    }
-
     public void updateGridItemAdapter(BooleanGridModel bgm){
         for (int i = 0; i < bgm.getBGMSize(); i++){
             if (bgm.isSelected(i)){
@@ -226,16 +226,6 @@ public class MainActivity extends ActionBarActivity {
         gridView.invalidateViews();
     }
 
-    public void colorRow(int i, BooleanGridModel bgm, boolean selected) {
-        for (int j = 0; j < size; j++) { //looping through samples (aka y-axis/scale)
-            if (!bgm.isSelected((j*size)+i)){
-                if (selected) {
-                    adapter.editDrawableID((j*size)+i, R.drawable.grey_square);
-                } else { adapter.editDrawableID(j*size+i, R.drawable.empty_square);}
-            }
-        }
-        adapter.notifyDataSetChanged();
-    }
 
     class PlayThread implements Runnable {
         private BooleanGridModel bgm;
@@ -314,6 +304,17 @@ public class MainActivity extends ActionBarActivity {
                     }
                 }
             });
+        }
+
+        public void colorRow(int i, BooleanGridModel bgm, boolean selected) {
+            for (int j = 0; j < size; j++) { //looping through samples (aka y-axis/scale)
+                if (!bgm.isSelected((j*size)+i)){
+                    if (selected) {
+                        adapter.editDrawableID((j*size)+i, R.drawable.grey_square);
+                    } else { adapter.editDrawableID(j*size+i, R.drawable.empty_square);}
+                }
+            }
+            adapter.notifyDataSetChanged();
         }
     }
 
