@@ -2,6 +2,9 @@ package edu.dkim2macalester.stepsequencer.controller;
 
 
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
 import android.media.SoundPool;
 import android.os.Bundle;
@@ -56,9 +59,8 @@ public class MainActivity extends ActionBarActivity {
         adapter = new GridItemAdapter(this);
         gridView.setAdapter(adapter);
 
-//        soundPool = new SoundPool(16, AudioManager.STREAM_MUSIC, 0);
         instrument.initiateSound();
-//        loadSounds();
+
         instrument.loadDeepHouseKit(this);
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -130,89 +132,32 @@ public class MainActivity extends ActionBarActivity {
         });
     }
 
-    //TODO delete all?
-//    private void loadSounds() {
-//        Sound s = new Sound();
-//        s.setDescription("kick");
-//        s.setSoundResourceId(soundPool.load(this,R.raw.kick,1));
-//        mSounds.add(s);
-//
-//        s = new Sound();
-//        s.setDescription("clap");
-//        s.setSoundResourceId(soundPool.load(this,R.raw.clap,1));
-//        mSounds.add(s);
-//
-//        s = new Sound();
-//        s.setDescription("snare");
-//        s.setSoundResourceId(soundPool.load(this,R.raw.snare,1));
-//        mSounds.add(s);
-//
-//        s = new Sound();
-//        s.setDescription("rim");
-//        s.setSoundResourceId(soundPool.load(this,R.raw.rim,1));
-//        mSounds.add(s);
-//
-//        s = new Sound();
-//        s.setDescription("cowbell");
-//        s.setSoundResourceId(soundPool.load(this,R.raw.cowbell,1));
-//        mSounds.add(s);
-//
-//        s = new Sound();
-//        s.setDescription("hh_closed");
-//        s.setSoundResourceId(soundPool.load(this,R.raw.hhclosed,1));
-//        mSounds.add(s);
-//
-//        s = new Sound();
-//        s.setDescription("hh_open");
-//        s.setSoundResourceId(soundPool.load(this,R.raw.hhopen,1));
-//        mSounds.add(s);
-//
-//        s = new Sound();
-//        s.setDescription("conga_low");
-//        s.setSoundResourceId(soundPool.load(this,R.raw.congalo,1));
-//        mSounds.add(s);
-//
-//        s = new Sound();
-//        s.setDescription("conga_med");
-//        s.setSoundResourceId(soundPool.load(this,R.raw.congamed,1));
-//        mSounds.add(s);
-//
-//        s = new Sound();
-//        s.setDescription("conga_hi");
-//        s.setSoundResourceId(soundPool.load(this,R.raw.congahi,1));
-//        mSounds.add(s);
-//
-//        s = new Sound();
-//        s.setDescription("tom_lo");
-//        s.setSoundResourceId(soundPool.load(this,R.raw.tomlo,1));
-//        mSounds.add(s);
-//
-//        s = new Sound();
-//        s.setDescription("tom_med");
-//        s.setSoundResourceId(soundPool.load(this,R.raw.tommed,1));
-//        mSounds.add(s);
-//
-//        s = new Sound();
-//        s.setDescription("tom_hi");
-//        s.setSoundResourceId(soundPool.load(this,R.raw.tomhi,1));
-//        mSounds.add(s);
-//
-//        s = new Sound();
-//        s.setDescription("cymbal_1");
-//        s.setSoundResourceId(soundPool.load(this,R.raw.cymbal1,1));
-//        mSounds.add(s);
-//
-//        s = new Sound();
-//        s.setDescription("cymbal_2");
-//        s.setSoundResourceId(soundPool.load(this,R.raw.cymbal2,1));
-//        mSounds.add(s);
-//
-//        s = new Sound();
-//        s.setDescription("cymbal_3");
-//        s.setSoundResourceId(soundPool.load(this,R.raw.cymbal3,1));
-//        mSounds.add(s);
-//    }
+    public void showInstruments(View view){
+        Dialog d = new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_LIGHT)
+                .setTitle("Select a Drum Kit")
+                .setNegativeButton("Cancel", null)
+                .setItems(new String[]{"808 Kit", "Kc Kit","Deep House Kit"}, new DialogInterface.OnClickListener(){
+                    @Override
+                    public void onClick(DialogInterface dlg, int position)
+                    {
+                        if ( position == 0 )
+                        {
+                            instrument.loadKitOne(MainActivity.this);
+                        }
+                        else if(position == 1){
+                            instrument.loadKcKit(MainActivity.this);
+                        }
+                        else if(position == 2){
+                            instrument.loadDeepHouseKit(MainActivity.this);
+                        }
 
+                    }
+                })
+                .create();
+        d.show();
+
+
+    }
     public void updateGridItemAdapter(BooleanGridModel bgm){
         for (int i = 0; i < bgm.getBGMSize(); i++){
             if (bgm.isSelected(i)){
