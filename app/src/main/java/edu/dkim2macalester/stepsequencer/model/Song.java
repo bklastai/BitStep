@@ -57,7 +57,7 @@ public class Song extends Object {
         return BGMList.get(currentBGMIndex);
     }
 
-    public BooleanGridModel getBGMFromIndex(int k){
+    public BooleanGridModel getBGMByIndex(int k){
         return BGMList.get(k);
     }
 
@@ -67,8 +67,7 @@ public class Song extends Object {
         BGMList.set(currentBGMIndex, BGM);
     }
 
-    //probably there's a cleaner way to do this, but need to set by index in play function
-    public void setCurrentBGMByIndex(int k){
+    public void setCurrentBGMIndex(int k){
         currentBGMIndex = k;
     }
 

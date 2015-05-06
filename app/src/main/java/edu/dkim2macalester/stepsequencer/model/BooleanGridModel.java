@@ -18,26 +18,35 @@ public final class BooleanGridModel extends Object {
         selections = temp;
     }
 
-    public BooleanGridModel(boolean[] temp){//takes a
+    public BooleanGridModel(boolean[] temp){//constructs a class with the given boolean array
         selections = temp;
     }
 
-
-    public BooleanGridModel setSelected(int position){
-        //new model to reflect changes
-        boolean[] temp = new boolean[width*height];
-
-        //setting identical to old BGM model aside from desired change
-        for (int i = 0; i < temp.length; i++){
-                temp[i]= this.isSelected(i);
-        }
-
-        //making the change
-        temp[position] = !this.isSelected(position);
-
-        BooleanGridModel newBGM = new BooleanGridModel(temp);
-        return newBGM;
+    //constructs a class with the given boolean
+    // array AND selects the grid at the
+    // specified position (Song's current BGM is updated
+    // to this one when grid cells are clicked)
+    public BooleanGridModel(boolean[] temp, int position){
+        selections = temp;
+        selections[position] = !isSelected(position);
     }
+
+
+//    public BooleanGridModel setSelected(int position){
+//        //new model to reflect changes
+//        boolean[] temp = new boolean[width*height];
+//
+//        //setting identical to old BGM model aside from desired change
+//        for (int i = 0; i < temp.length; i++){
+//                temp[i]= this.isSelected(i);
+//        }
+//
+//        //making the change
+//        selections[position] = !this.isSelected(position);
+//
+//        BooleanGridModel newBGM = new BooleanGridModel(temp);
+//        return newBGM;
+//    }
 
     public int getSample(int position) { return (position - position % width) / height; }
 
@@ -49,6 +58,10 @@ public final class BooleanGridModel extends Object {
 
     public int getBGMSize() {
         return selections.length;
+    }
+
+    public boolean[] getBooleanArray(){
+        return selections;
     }
 
 }

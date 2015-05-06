@@ -28,20 +28,8 @@ public class GridItemAdapter extends BaseAdapter{
         initValues();
     }
 
-    public int getCount() {
-        return values.length;
-    }
-
-    public Object getItem(int position) {
-        return values[position];
-    }
-
-    public void editDrawableID(int index, Integer obj){
-        values[index] = obj;
-    }
-
-    public long getItemId(int position) {
-        return 0;
+    public void editDrawableID(int position, Integer drawableID){
+        values[position] = drawableID;
     }
 
     // create a new View (Button) for each item referenced by the Adapter
@@ -60,15 +48,26 @@ public class GridItemAdapter extends BaseAdapter{
     }
 
 
+    public long getItemId(int position) {
+        return 0;
+    }
+
+
+    public int getCount() {
+        return values.length;
+    }
+
+
+    public Object getItem(int position) {
+        return values[position];
+    }
+
+
     public void initValues(){
         for (int i=0;i<gridHeight*gridWidth;i++){
             this.values[i]= R.drawable.empty_square;
         }
     }
-
-
-
-
 
 
 
