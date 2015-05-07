@@ -83,8 +83,8 @@ public class MainActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
 //                v.setBackgroundResource(R.drawable.pause1_no_border);
-                Runnable r = new PlayThread();
                 if (!isPlaying()) {
+                    Runnable r = new PlayThread();
                     new Thread(r).start();
                 } else {
                     setPlaying(false);

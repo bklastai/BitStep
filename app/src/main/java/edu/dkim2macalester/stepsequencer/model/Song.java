@@ -5,7 +5,7 @@ import java.util.ArrayList;
 /**
  * Created by Benas on 3/27/2015.
  */
-public class Song extends Object {
+public class Song {
 
 
     private ArrayList<BooleanGridModel> BGMList = new ArrayList<>();
@@ -27,14 +27,18 @@ public class Song extends Object {
     }
 
     public boolean areRemainingBGMsEmpty(int currentIndex){
-        for (int i=currentIndex; i<BGMList.size(); i++){
-            if (BGMList.get(i).equals(emptyBGM)){
-                if (i==BGMList.size()-1){
-                    return true;
+        for (int i=currentIndex; i<getBGMListSize(); i++){
+            boolean[] tempBGM = BGMList.get(i).getBooleanArray();
+            for (int j=0; j<tempBGM.length; j++){
+                if (!tempBGM[i]){
+                    return false;
                 }
-                else {
-                    return areRemainingBGMsEmpty(i);
-                }
+            }
+            if (i==BGMList.size()-1){
+                return true;
+            }
+            else {
+                return areRemainingBGMsEmpty(i+1);
             }
         }
         return false;
