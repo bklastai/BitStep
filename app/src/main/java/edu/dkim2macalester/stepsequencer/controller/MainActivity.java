@@ -1,18 +1,19 @@
 package edu.dkim2macalester.stepsequencer.controller;
 
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.TextView;
 
 import edu.dkim2macalester.stepsequencer.R;
 import edu.dkim2macalester.stepsequencer.model.BooleanGridModel;
@@ -22,7 +23,7 @@ import edu.dkim2macalester.stepsequencer.model.Sound;
 import edu.dkim2macalester.stepsequencer.view.GridItemAdapter;
 
 
-public class MainActivity extends Activity {
+public class MainActivity extends ActionBarActivity {
 
     private int size = 16;
     private int tempo = 120;
@@ -34,11 +35,9 @@ public class MainActivity extends Activity {
     private Song song = new Song();
     private BooleanGridModel BGM;
 
-//    public SoundPool soundPool;
-//    public ArrayList<Sound> mSounds = new ArrayList<>();
-
     //DO NOT EVER EVER USE THIS VARIABLE. instead use methods isPlaying and setPlaying - for threadsafety reasons
     private boolean isPlaying = false; //flag to see whether or not the app is currently playing sound
+    private boolean muteActivated = false;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -61,52 +60,79 @@ public class MainActivity extends Activity {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 if (!BGM.isSelected(position)) {
-                    v.setBackgroundResource(R.drawable.black_square);
-                    adapter.editDrawableID(position, R.drawable.black_square);
+                    v.setBackgroundResource(R.drawable.white_square_blue_filling);
+                    adapter.editDrawableID(position, R.drawable.white_square_blue_filling);
                 } else {
-                    v.setBackgroundResource(R.drawable.empty_square);
-                    adapter.editDrawableID(position, R.drawable.empty_square);
+                    v.setBackgroundResource(R.drawable.empty_square_white);
+                    adapter.editDrawableID(position, R.drawable.empty_square_white);
                 }
                 BGM = new BooleanGridModel(BGM.getBooleanArray(), position);
                 song.setCurrentBGM(BGM); //updates song with new BGM
 
-//                //for playing sound on touch
-//                Sound s = (Sound) instrument.accessSoundArray().get(BGM.getSample(position));
-//                instrument.accessSoundPool().play(s.getSoundResourceId(),1,1,3,0,1);
+                //for playing sound on grid-cell-touch
+                if (!muteActivated) {
+                    Sound s = (Sound) instrument.accessSoundArray().get(BGM.getSample(position));
+                    instrument.accessSoundPool().play(s.getSoundResourceId(), 1, 1, 3, 0, 1);
+                }
             }
         });
 
         final Button play = (Button) findViewById(R.id.play);
+        play.setBackgroundResource(R.drawable.play1_no_border);
         play.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+//                v.setBackgroundResource(R.drawable.pause1_no_border);
                 Runnable r = new PlayThread();
                 if (!isPlaying()) {
                     new Thread(r).start();
                 } else {
                     setPlaying(false);
                 }
+//                v.setBackgroundResource(R.drawable.play1_no_border);
             }
         });
 
         final Button next = (Button) findViewById(R.id.next_grid);
+        next.setVisibility(View.GONE);
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!isPlaying()) {
                     BGM = song.getNextBGM();
                     updateGridItemAdapter(BGM);
+                    fixNavIcons();
+                    fixBGMIndexIndicator();
                 }
             }
         });
 
+
+
         final Button previous = (Button) findViewById(R.id.previous_grid);
+        previous.setVisibility(View.INVISIBLE);
         previous.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!isPlaying()) {
                     BGM = song.getPreviousBGM();
                     updateGridItemAdapter(BGM);
+                    fixNavIcons();
+                    fixBGMIndexIndicator();
+                }
+            }
+        });
+
+
+        final Button add = (Button) findViewById(R.id.add_gridview);
+        add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!isPlaying()) {
+                    BGM = song.addBGM();
+                    updateGridItemAdapter(BGM);
+                    fixNavIcons();
+                    fixBGMIndexIndicator();
                 }
             }
         });
@@ -117,12 +143,67 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 BGM = new BooleanGridModel();
-                updateGridItemAdapter(BGM);
                 song.setCurrentBGM(BGM);
                 updateGridItemAdapter(song.getCurrentBGM());
             }
         });
+
+
+        final Button mute = (Button) findViewById(R.id.mute);
+        mute.setBackgroundResource(R.drawable.sound_active1_no_border);
+        mute.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switchMuteConfig();
+                if (muteActivated) {
+                    v.setBackgroundResource(R.drawable.sound_inactive1_no_border);
+                } else {
+                    v.setBackgroundResource(R.drawable.sound_active1_no_border);
+                }
+            }
+        });
+
+
+        final TextView BGMIndex = (TextView) findViewById(R.id.BGMIndex);
+        BGMIndex.setText("1");
+
+
     }
+
+    public void fixBGMIndexIndicator(){
+        TextView indexView = (TextView) findViewById(R.id.BGMIndex);
+        indexView.setText(""+(song.getCurrentBGMIndex()+1));
+    }
+
+    public void fixNavIcons(){
+        if (song.getCurrentBGMIndex()==0){
+            if (song.getBGMListSize()==1){
+                findViewById(R.id.next_grid).setVisibility(View.GONE);
+                findViewById(R.id.add_gridview).setVisibility(View.VISIBLE);
+            }
+            else {
+                findViewById(R.id.next_grid).setVisibility(View.VISIBLE);
+                findViewById(R.id.add_gridview).setVisibility(View.GONE);
+            }
+            findViewById(R.id.previous_grid).setVisibility(View.INVISIBLE);
+        }
+        else {
+            if (song.getCurrentBGMIndex() == song.getBGMListSize()-1){
+                findViewById(R.id.next_grid).setVisibility(View.GONE);
+                findViewById(R.id.add_gridview).setVisibility(View.VISIBLE);
+            }
+            else {
+                findViewById(R.id.next_grid).setVisibility(View.VISIBLE);
+                findViewById(R.id.add_gridview).setVisibility(View.GONE);
+            }
+            findViewById(R.id.previous_grid).setVisibility(View.VISIBLE);
+        }
+    }
+
+    public void switchMuteConfig(){
+        muteActivated = !muteActivated;
+    }
+
 
     public void showInstruments(View view){
         Dialog d = new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_LIGHT)
@@ -152,10 +233,10 @@ public class MainActivity extends Activity {
     public void updateGridItemAdapter(BooleanGridModel bgm){
         for (int i = 0; i < bgm.getBGMSize(); i++){
             if (bgm.isSelected(i)){
-                adapter.editDrawableID(i, R.drawable.black_square);
+                adapter.editDrawableID(i, R.drawable.white_square_blue_filling);
             }
             else {
-                adapter.editDrawableID(i, R.drawable.empty_square);
+                adapter.editDrawableID(i, R.drawable.empty_square_white);
             }
         }
         adapter.notifyDataSetChanged();
@@ -178,10 +259,30 @@ public class MainActivity extends Activity {
                 BGM = song.getCurrentBGM(); //get the kth grid
 
                 switchUiNextGrid();//makes a runnable for updating gridview adapter
+                switchUiNavIcons();
+                switchUiBGMIndeces();
 
                 if (playGrid(k)) return true; //breaks play loop if the user has pressed pause
             }
             return false;
+        }
+
+        private void switchUiBGMIndeces(){
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    fixBGMIndexIndicator();
+                }
+            });
+        }
+
+        private void switchUiNavIcons() {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    fixNavIcons();
+                }
+            });
         }
 
         private void switchUiNextGrid() {
@@ -195,7 +296,7 @@ public class MainActivity extends Activity {
 
         private boolean playGrid(final int gridNum) {
             for (int i = 0; i < size; i++){ //looping through beats (aka timestamps/columns)
-                if (!isPlaying()) { //breaks play loop if the user has pressed pause
+                if (!isPlaying() || song.areRemainingBGMsEmpty(song.getCurrentBGMIndex())) { //breaks play loop if the user has pressed pause
                     return true;
                 }
                 BGM = song.getBGMByIndex(gridNum); //pulls updated grid if changes have been made
@@ -228,10 +329,10 @@ public class MainActivity extends Activity {
                         for (int j = 0; j < size; j++) { //looping through samples (aka y-axis)
                             if (!BGM.isSelected((j*size)+beatNum)){
                                 if (highlighted) {
-                                    adapter.editDrawableID((j*size)+beatNum, R.drawable.grey_square);
+                                    adapter.editDrawableID((j*size)+beatNum, R.drawable.grey_square_filled);
                                 }
                                 else {
-                                    adapter.editDrawableID(j*size+beatNum, R.drawable.empty_square);}
+                                    adapter.editDrawableID(j*size+beatNum, R.drawable.empty_square_white);}
                             }
                         }
                         adapter.notifyDataSetChanged();

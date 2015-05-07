@@ -9,29 +9,45 @@ public class Song extends Object {
 
 
     private ArrayList<BooleanGridModel> BGMList = new ArrayList<>();
-//    private BooleanGridModel[] BGMArray = (BooleanGridModel[]) BGMList.toArray();
     private int currentBGMIndex = 0;
+    private BooleanGridModel emptyBGM = new BooleanGridModel();
 
 
     public Song(){
         init();
     }
 
-    public void addBGM(){
-        BooleanGridModel bgm = new BooleanGridModel();
-        BGMList.add(bgm);
-        BGMList.set(BGMList.size() - 1, bgm);
+    public BooleanGridModel addBGM(){
+        if (!areRemainingBGMsEmpty(currentBGMIndex)){
+            BGMList.add(new BooleanGridModel());
+            currentBGMIndex = getCurrentBGMIndex()+1;
+            return BGMList.get(getCurrentBGMIndex());
+        }
+        return getCurrentBGM();
+    }
+
+    public boolean areRemainingBGMsEmpty(int currentIndex){
+        for (int i=currentIndex; i<BGMList.size(); i++){
+            if (BGMList.get(i).equals(emptyBGM)){
+                if (i==BGMList.size()-1){
+                    return true;
+                }
+                else {
+                    return areRemainingBGMsEmpty(i);
+                }
+            }
+        }
+        return false;
     }
 
 
+
     public BooleanGridModel getNextBGM(){
-        if (BGMList.size() - 1 > currentBGMIndex){ //if there is a next grid, then return it!
+        if (currentBGMIndex < BGMList.size() - 1){ //if there is a next grid, then return it!
             currentBGMIndex++;
             return BGMList.get(currentBGMIndex);
-        } else if (getBGMListSize() < 5) {  //if there isn't, make a new one - but creates no more than five grids total
-            addBGM();
-            return getNextBGM();
-        } else { //if there are already five, not creating a new one, returns the one you're on
+        }
+        else { //if there are already five, not creating a new one, returns the one you're on
             return getCurrentBGM();
         }
     }
@@ -50,7 +66,6 @@ public class Song extends Object {
     public void init(){
         BooleanGridModel bgm = new BooleanGridModel();
         BGMList.add(bgm);
-        BGMList.set(0, bgm);
     }
 
     public BooleanGridModel getCurrentBGM(){
