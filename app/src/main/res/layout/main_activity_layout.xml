@@ -31,8 +31,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/instrument_options1_no_border"
-                android:layout_gravity="center"
-                android:onClick="showInstruments"/>
+                android:layout_gravity="center"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"

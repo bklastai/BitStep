@@ -86,7 +86,9 @@ public class MainActivity extends ActionBarActivity {
                 if (!isPlaying()) {
                     Runnable r = new PlayThread();
                     new Thread(r).start();
+                    play.setBackgroundResource(R.drawable.pause1_no_border);
                 } else {
+                    play.setBackgroundResource(R.drawable.play1_no_border);
                     setPlaying(false);
                 }
 //                v.setBackgroundResource(R.drawable.play1_no_border);
@@ -163,6 +165,16 @@ public class MainActivity extends ActionBarActivity {
             }
         });
 
+        final Button instruments = (Button) findViewById(R.id.instruments);
+        instruments.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                setPlaying(false);
+                play.setBackgroundResource(R.drawable.play1_no_border);
+                showInstruments(v);
+            }
+        });
+
 
         final TextView BGMIndex = (TextView) findViewById(R.id.BGMIndex);
         BGMIndex.setText("1");
@@ -206,7 +218,7 @@ public class MainActivity extends ActionBarActivity {
 
 
     public void showInstruments(View view){
-        Dialog d = new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_LIGHT)
+        Dialog d = new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_DARK)
                 .setTitle("Select a Drum Kit")
                 .setItems(new String[]{"808 Kit", "Kc Kit","Deep House Kit"}, new DialogInterface.OnClickListener(){
                     @Override
