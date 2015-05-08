@@ -226,7 +226,7 @@ public class MainActivity extends ActionBarActivity {
                     {
                         if ( position == 0 )
                         {
-                            instrument.loadKitOne(MainActivity.this);
+                            instrument.load808Kit(MainActivity.this);
                         }
                         else if(position == 1){
                             instrument.loadKcKit(MainActivity.this);

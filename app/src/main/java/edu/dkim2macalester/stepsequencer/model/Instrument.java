@@ -35,7 +35,8 @@ public class Instrument {
         initiateSound();
     }
 
-    public void loadKitOne(Context context) {
+    public void load808Kit(Context context) {
+//        samples taken from http://hiphopmakers.com/free-808-drum-kit-227-samples
         reset();
 
         Sound s = new Sound();
@@ -120,6 +121,7 @@ public class Instrument {
     }
 
     public void loadKcKit (Context context) {
+//        Samples taken from http://www.freesound.org/people/NoiseCollector/packs/161/
         reset();
 
         Sound s = new Sound();
@@ -205,6 +207,7 @@ public class Instrument {
     }
 
     public void loadDeepHouseKit (Context context) {
+//        Samples taken from https://www.freesound.org/people/DWSD/packs/11575/
         reset();
 
         Sound s = new Sound();
