@@ -44,6 +44,15 @@ public class Song {
         return false;
     }
 
+    public boolean isEmpty(){
+        for (int i=0; i<getBGMListSize(); i++){
+            BooleanGridModel tempBGM = getBGMByIndex(i);
+            if (!tempBGM.isEmpty()){
+                return false;
+            }
+        }
+        return true;
+    }
 
 
     public BooleanGridModel getNextBGM(){

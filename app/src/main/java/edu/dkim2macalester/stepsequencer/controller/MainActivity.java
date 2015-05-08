@@ -144,9 +144,14 @@ public class MainActivity extends ActionBarActivity {
         clear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                BGM = new BooleanGridModel();
-                song.setCurrentBGM(BGM);
-                updateGridItemAdapter(song.getCurrentBGM());
+//                BGM = new BooleanGridModel();
+//                song.setCurrentBGM(BGM);
+//                updateGridItemAdapter(song.getCurrentBGM());
+                if (!song.isEmpty()){
+                    setPlaying(false);
+                    play.setBackgroundResource(R.drawable.play1_no_border);
+                    confirmClear(v);
+                }
             }
         });
 
@@ -237,6 +242,21 @@ public class MainActivity extends ActionBarActivity {
 
                     }
                 })
+                .create();
+        d.show();
+    }
+
+    public void confirmClear(View view){
+        Dialog d = new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_DARK)
+                .setTitle("Are you sure you want to delete your beat?")
+                .setPositiveButton("Yes",new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog,int id) {
+                        BGM = new BooleanGridModel();
+                        song.setCurrentBGM(BGM);
+                        updateGridItemAdapter(song.getCurrentBGM());
+                    }
+                })
+                .setNegativeButton("No",null)
                 .create();
         d.show();
     }

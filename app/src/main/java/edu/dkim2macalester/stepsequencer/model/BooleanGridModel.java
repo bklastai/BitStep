@@ -64,4 +64,13 @@ public final class BooleanGridModel extends Object {
         return selections;
     }
 
+    public boolean isEmpty(){
+        for (int i=0; i<selections.length; i++){
+            if (isSelected(i)){
+                return false;
+            }
+        }
+        return true;
+    }
+
 }
