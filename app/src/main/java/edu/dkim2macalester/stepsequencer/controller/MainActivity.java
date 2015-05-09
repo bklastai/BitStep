@@ -273,6 +273,8 @@ public class MainActivity extends ActionBarActivity {
                             BGM = new BooleanGridModel();
                             song.setCurrentBGM(BGM);
                             updateGridItemAdapter(song.getCurrentBGM());
+                            fixNavIcons();
+                            fixBGMIndexIndicator();
                         }
 
                     }
