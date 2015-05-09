@@ -132,7 +132,7 @@ public class MainActivity extends ActionBarActivity {
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!isPlaying()) {
+                if (!isPlaying() && song.getBGMListSize() < 5) {
                     BGM = song.addBGM();
                     updateAdapter_oneBGM(BGM);
                     fixNavIcons();
@@ -207,9 +207,13 @@ public class MainActivity extends ActionBarActivity {
             findViewById(R.id.previous_grid).setVisibility(View.INVISIBLE);
         }
         else {
-            if (song.getCurrentBGMIndex() == song.getBGMListSize()-1){
+            if (song.getCurrentBGMIndex() == song.getBGMListSize()-1 && song.getCurrentBGMIndex() != 4){
                 findViewById(R.id.next_grid).setVisibility(View.GONE);
                 findViewById(R.id.add_gridview).setVisibility(View.VISIBLE);
+            }
+            else if (song.getCurrentBGMIndex() == song.getBGMListSize()-1) {
+                findViewById(R.id.next_grid).setVisibility(View.GONE);
+                findViewById(R.id.add_gridview).setVisibility(View.GONE);
             }
             else {
                 findViewById(R.id.next_grid).setVisibility(View.VISIBLE);
