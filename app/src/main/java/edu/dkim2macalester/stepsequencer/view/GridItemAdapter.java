@@ -17,7 +17,6 @@ public class GridItemAdapter extends BaseAdapter{
 
     private int gridWidth = 16;
     private int gridHeight = 16;
-    private static int drumsetColor;
 
     private Integer[] values = new Integer[gridWidth*gridHeight];
 

@@ -88,7 +88,6 @@ public class MainActivity extends ActionBarActivity {
         play.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                v.setBackgroundResource(R.drawable.pause1_no_border);
                 if (!isPlaying()) {
                     Runnable r = new PlayThread();
                     new Thread(r).start();
@@ -97,7 +96,6 @@ public class MainActivity extends ActionBarActivity {
                     play.setBackgroundResource(R.drawable.play1_no_border);
                     setPlaying(false);
                 }
-//                v.setBackgroundResource(R.drawable.play1_no_border);
             }
         });
 
@@ -344,18 +342,6 @@ public class MainActivity extends ActionBarActivity {
                 .setNegativeButton("Cancel", null)
                 .create();
         d.show();
-        //        Dialog d = new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_DARK)
-//                .setTitle("Are you sure you want to delete your beat?")
-//                .setPositiveButton("Yes",new DialogInterface.OnClickListener() {
-//                    public void onClick(DialogInterface dialog,int id) {
-//                        BGM = new BooleanGridModel();
-//                        song.setCurrentBGM(BGM);
-//                        updateGridItemAdapter(song.getCurrentBGM());
-//                    }
-//                })
-//                .setNegativeButton("No",null)
-//                .create();
-//        d.show();
     }
 
 

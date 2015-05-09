@@ -28,7 +28,7 @@ public final class BooleanGridModel {
         selections = temp;
         selections[position] = !isSelected(position);
     }
-    
+
     public int getSample(int position) { return (position - position % width) / height; }
 
     public boolean isSelected(int position) {
