@@ -1,6 +1,8 @@
  package edu.dkim2macalester.stepsequencer.model;
 
 /**
+ * Thread-safe immutable class holds 'state of the beat' - boolean array keeps track of what's been pressed.
+ *
  * Created by mju on 3/23/2015.
  */
 

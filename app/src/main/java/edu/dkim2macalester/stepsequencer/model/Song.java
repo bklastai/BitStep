@@ -3,6 +3,8 @@ package edu.dkim2macalester.stepsequencer.model;
 import java.util.ArrayList;
 
 /**
+ * Contains an array of all grids the user is currently using. Thread-safety is questionable.
+ *
  * Created by Benas on 3/27/2015.
  */
 public class Song {
@@ -10,7 +12,6 @@ public class Song {
 
     private ArrayList<BooleanGridModel> BGMList = new ArrayList<>();
     private int currentBGMIndex = 0;
-    private BooleanGridModel emptyBGM = new BooleanGridModel();
 
 
     public Song(){
@@ -19,12 +20,12 @@ public class Song {
 
     public BooleanGridModel addBGM(){
         BGMList.add(new BooleanGridModel());
-        currentBGMIndex = getCurrentBGMIndex()+1;
+        currentBGMIndex = getCurrentBGMIndex() + 1;
         return BGMList.get(getCurrentBGMIndex());
     }
 
     public boolean isEmpty(){
-        for (int i=0; i<getBGMListSize(); i++){
+        for (int i = 0; i < getBGMListSize(); i++){
             BooleanGridModel tempBGM = getBGMByIndex(i);
             if (!tempBGM.isEmpty()){
                 return false;
@@ -57,7 +58,7 @@ public class Song {
     }
 
 
-    public void init(){
+    private void init(){
         BooleanGridModel bgm = new BooleanGridModel();
         BGMList.add(bgm);
     }
@@ -91,11 +92,5 @@ public class Song {
     public int getCurrentBGMIndex (){
         return currentBGMIndex;
     }
-
-    public ArrayList<BooleanGridModel> getBGMList(){
-        return this.BGMList;
-    }
-
-    public void fixBGMListOrderAfterDeletingElement(int position){}
 
 }

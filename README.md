@@ -13,3 +13,4 @@ http://www.freesound.org/people/NoiseCollector/packs/161/
 List of known bugs:
 Icons for buttons stretch on different screens
 When paused, animation will occasionally freeze with a beat highlighted.
+Touching the top-left square while in playback causes freeze, app will sometimes not play while it is selected.

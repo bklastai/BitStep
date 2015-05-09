@@ -31,7 +31,7 @@ public class MainActivity extends ActionBarActivity {
     private int size = 16;
     private int tempo = 120;
     private int tempTempo;
-    private int tempoMin=60; //Needed for UI (Seekbar minimum value is always 0)
+    private int tempoMin = 60; //Needed for UI (Seekbar minimum value is always 0)
     private GridView gridView;
     private GridItemAdapter adapter;
 
@@ -248,8 +248,8 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void fixNavIcons(){
-        if (song.getCurrentBGMIndex()==0){
-            if (song.getBGMListSize()==1){
+        if (song.getCurrentBGMIndex() == 0){
+            if (song.getBGMListSize() == 1){
                 findViewById(R.id.next_grid).setVisibility(View.GONE);
                 findViewById(R.id.add_gridview).setVisibility(View.VISIBLE);
             }
@@ -260,7 +260,7 @@ public class MainActivity extends ActionBarActivity {
             findViewById(R.id.previous_grid).setVisibility(View.INVISIBLE);
         }
         else {
-            if (song.getCurrentBGMIndex() == song.getBGMListSize()-1 && song.getCurrentBGMIndex() != 4){
+            if (song.getCurrentBGMIndex() == song.getBGMListSize() - 1 && song.getCurrentBGMIndex() != 4){
                 findViewById(R.id.next_grid).setVisibility(View.GONE);
                 findViewById(R.id.add_gridview).setVisibility(View.VISIBLE);
             }
@@ -315,7 +315,7 @@ public class MainActivity extends ActionBarActivity {
                             song.setCurrentBGM(BGM);
                             updateAdapter_oneBGM(song.getCurrentBGM());
                         } else if (position == 1) {
-                            if (song.getBGMListSize()>1){
+                            if (song.getBGMListSize() > 1){
                                 song.deleteCurrentBGM();
                                 song.setCurrentBGMIndex(song.getCurrentBGMIndex() - 1);
                                 BGM = song.getCurrentBGM();
