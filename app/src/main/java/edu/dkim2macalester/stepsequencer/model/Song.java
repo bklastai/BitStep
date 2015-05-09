@@ -18,30 +18,9 @@ public class Song {
     }
 
     public BooleanGridModel addBGM(){
-        if (!areRemainingBGMsEmpty(currentBGMIndex)){
-            BGMList.add(new BooleanGridModel());
-            currentBGMIndex = getCurrentBGMIndex()+1;
-            return BGMList.get(getCurrentBGMIndex());
-        }
-        return getCurrentBGM();
-    }
-
-    public boolean areRemainingBGMsEmpty(int currentIndex){
-        for (int i=currentIndex; i<getBGMListSize(); i++){
-            boolean[] tempBGM = BGMList.get(i).getBooleanArray();
-            for (int j=0; j<tempBGM.length; j++){
-                if (!tempBGM[i]){
-                    return false;
-                }
-            }
-            if (i==BGMList.size()-1){
-                return true;
-            }
-            else {
-                return areRemainingBGMsEmpty(i+1);
-            }
-        }
-        return false;
+        BGMList.add(new BooleanGridModel());
+        currentBGMIndex = getCurrentBGMIndex()+1;
+        return BGMList.get(getCurrentBGMIndex());
     }
 
     public boolean isEmpty(){
@@ -64,6 +43,8 @@ public class Song {
             return getCurrentBGM();
         }
     }
+
+
 
     public BooleanGridModel getPreviousBGM(){
         if (currentBGMIndex > 0){
@@ -114,5 +95,7 @@ public class Song {
     public ArrayList<BooleanGridModel> getBGMList(){
         return this.BGMList;
     }
+
+    public void fixBGMListOrderAfterDeletingElement(int position){}
 
 }

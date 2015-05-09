@@ -291,7 +291,44 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void confirmClear(View view){
-//        Dialog d = new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_DARK)
+        Dialog d = new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_DARK)
+                .setTitle("Clear")
+                .setItems(new String[]{"Clear contents of current grid", "Delete this grid", "Delete all grids"}, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dlg, int position) {
+                        if (position == 0) {
+                            BGM = new BooleanGridModel();
+                            song.setCurrentBGM(BGM);
+                            updateAdapter_oneBGM(song.getCurrentBGM());
+                        } else if (position == 1) {
+                            if (song.getBGMListSize()>1){
+                                song.deleteCurrentBGM();
+                                song.setCurrentBGMIndex(song.getCurrentBGMIndex() - 1);
+                                BGM = song.getCurrentBGM();
+                                updateAdapter_oneBGM(BGM);
+                                fixNavIcons();
+                                fixBGMIndexIndicator();
+//                                song.fixBGMListOrderAfterDeletingElement(int position);
+                            }
+                            else {//this scneraio assumes people confuse "clear" and "delete" when they have one grid
+                                BGM = new BooleanGridModel();
+                                song.setCurrentBGM(BGM);
+                                updateAdapter_oneBGM(song.getCurrentBGM());
+                            }
+                        } else if (position == 2) {
+                            song = new Song();
+                            BGM = new BooleanGridModel();
+                            song.setCurrentBGM(BGM);
+                            updateAdapter_oneBGM(song.getCurrentBGM());
+                            fixNavIcons();
+                            fixBGMIndexIndicator();
+                        }
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .create();
+        d.show();
+        //        Dialog d = new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_DARK)
 //                .setTitle("Are you sure you want to delete your beat?")
 //                .setPositiveButton("Yes",new DialogInterface.OnClickListener() {
 //                    public void onClick(DialogInterface dialog,int id) {
@@ -303,29 +340,6 @@ public class MainActivity extends ActionBarActivity {
 //                .setNegativeButton("No",null)
 //                .create();
 //        d.show();
-        Dialog d = new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_DARK)
-                .setTitle("Clear")
-                .setItems(new String[]{"Empty contents of current grid", "Delete all grids"}, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dlg, int position) {
-                        if (position == 0) {
-                            BGM = new BooleanGridModel();
-                            song.setCurrentBGM(BGM);
-                            updateAdapter_oneBGM(song.getCurrentBGM());
-                        } else if (position == 1) {
-                            song = new Song();
-                            BGM = new BooleanGridModel();
-                            song.setCurrentBGM(BGM);
-                            updateAdapter_oneBGM(song.getCurrentBGM());
-                            fixNavIcons();
-                            fixBGMIndexIndicator();
-                        }
-
-                    }
-                })
-                .setNegativeButton("Cancel",null)
-                .create();
-        d.show();
     }
 
 
@@ -402,7 +416,7 @@ public class MainActivity extends ActionBarActivity {
 
         private boolean playGrid(final int gridNum) {
             for (int i = 0; i < size; i++){ //looping through beats (aka timestamps/columns)
-                if (!isPlaying() || song.areRemainingBGMsEmpty(song.getCurrentBGMIndex())) { //breaks play loop if the user has pressed pause
+                if (!isPlaying()) { //breaks play loop if the user has pressed pause
                     return true;
                 }
                 BGM = song.getBGMByIndex(gridNum); //pulls updated grid if changes have been made
