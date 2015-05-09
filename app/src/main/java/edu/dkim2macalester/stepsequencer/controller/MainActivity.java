@@ -247,16 +247,37 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void confirmClear(View view){
+//        Dialog d = new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_DARK)
+//                .setTitle("Are you sure you want to delete your beat?")
+//                .setPositiveButton("Yes",new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog,int id) {
+//                        BGM = new BooleanGridModel();
+//                        song.setCurrentBGM(BGM);
+//                        updateGridItemAdapter(song.getCurrentBGM());
+//                    }
+//                })
+//                .setNegativeButton("No",null)
+//                .create();
+//        d.show();
         Dialog d = new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_DARK)
-                .setTitle("Are you sure you want to delete your beat?")
-                .setPositiveButton("Yes",new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog,int id) {
-                        BGM = new BooleanGridModel();
-                        song.setCurrentBGM(BGM);
-                        updateGridItemAdapter(song.getCurrentBGM());
+                .setTitle("Clear")
+                .setItems(new String[]{"Empty contents of current grid", "Delete all grids"}, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dlg, int position) {
+                        if (position == 0) {
+                            BGM = new BooleanGridModel();
+                            song.setCurrentBGM(BGM);
+                            updateGridItemAdapter(song.getCurrentBGM());
+                        } else if (position == 1) {
+                            song = new Song();
+                            BGM = new BooleanGridModel();
+                            song.setCurrentBGM(BGM);
+                            updateGridItemAdapter(song.getCurrentBGM());
+                        }
+
                     }
                 })
-                .setNegativeButton("No",null)
+                .setNegativeButton("Cancel", null)
                 .create();
         d.show();
     }
