@@ -70,8 +70,8 @@ public class MainActivity extends ActionBarActivity {
                         instrument.accessSoundPool().play(s.getSoundResourceId(), 1, 1, 3, 0, 1);
                     }
                 } else {
-                    v.setBackgroundResource(R.drawable.index_back);
-                    adapter.editDrawableID(position, R.drawable.index_back);
+                    v.setBackgroundResource(R.drawable.white_frame);
+                    adapter.editDrawableID(position, R.drawable.white_frame);
                 }
                 BGM = new BooleanGridModel(BGM.getBooleanArray(), position);
                 song.setCurrentBGM(BGM); //updates song with new BGM
@@ -299,7 +299,7 @@ public class MainActivity extends ActionBarActivity {
                 adapter.editDrawableID(i, drumsetColor);
             }
             else {
-                adapter.editDrawableID(i, R.drawable.index_back);
+                adapter.editDrawableID(i, R.drawable.white_frame);
             }
         }
         adapter.notifyDataSetChanged();
@@ -395,7 +395,7 @@ public class MainActivity extends ActionBarActivity {
                                     adapter.editDrawableID((j*size)+beatNum, R.drawable.grey_square_filled);
                                 }
                                 else {
-                                    adapter.editDrawableID(j*size+beatNum, R.drawable.index_back);}
+                                    adapter.editDrawableID(j*size+beatNum, R.drawable.white_frame);}
                             }
                         }
                         adapter.notifyDataSetChanged();

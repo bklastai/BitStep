@@ -101,7 +101,7 @@
                 android:layout_centerInParent="true"
                 android:textSize="40sp"
                 android:textColor="#ffffff"
-                android:background="@drawable/index_back"/>
+                android:background="@drawable/white_frame"/>
         </RelativeLayout>
         <Button
             android:id="@+id/add_gridview"

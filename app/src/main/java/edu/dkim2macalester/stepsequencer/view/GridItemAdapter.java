@@ -66,7 +66,7 @@ public class GridItemAdapter extends BaseAdapter{
 
     public void initValues(){
         for (int i=0;i<gridHeight*gridWidth;i++){
-            this.values[i]= R.drawable.index_back;
+            this.values[i]= R.drawable.white_frame;
         }
     }
 
