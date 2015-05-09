@@ -147,7 +147,7 @@ public class MainActivity extends ActionBarActivity {
 //                BGM = new BooleanGridModel();
 //                song.setCurrentBGM(BGM);
 //                updateGridItemAdapter(song.getCurrentBGM());
-                if (!song.isEmpty()){
+                if (!song.isEmpty()||song.getBGMListSize()>1){
                     setPlaying(false);
                     play.setBackgroundResource(R.drawable.play1_no_border);
                     confirmClear(v);
