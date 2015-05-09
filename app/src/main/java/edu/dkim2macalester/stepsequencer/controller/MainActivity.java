@@ -30,7 +30,8 @@ public class MainActivity extends ActionBarActivity {
     Context context = this;
     private int size = 16;
     private int tempo = 120;
-
+    private int tempTempo;
+    private int tempoMin=60; //Needed for UI (Seekbar minimum value is always 0)
     private GridView gridView;
     private GridItemAdapter adapter;
 
@@ -188,15 +189,18 @@ public class MainActivity extends ActionBarActivity {
         final Button settings = (Button) findViewById(R.id.music_options);
         settings.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View v) {
                 final Dialog yourDialog = new Dialog(context);
                 yourDialog.setContentView(R.layout.seekerdialog);
                 yourDialog.setTitle("Settings");
 
 
                 //tempo seeker
-                SeekBar tempoSetter = (SeekBar)yourDialog.findViewById(R.id.temposeeker);
+                final TextView tempoView = (TextView) yourDialog.findViewById(R.id.currentTempo);
+                tempoView.setText(Integer.toString(tempo + tempoMin));
+                final SeekBar tempoSetter = (SeekBar)yourDialog.findViewById(R.id.temposeeker);
                 tempoSetter.setMax(300);
+                tempoSetter.setProgress(tempo + tempoMin);
 //                //Maybe add a global tempo holder
                 tempoSetter.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){
                     @Override
@@ -204,12 +208,22 @@ public class MainActivity extends ActionBarActivity {
                     @Override
                     public void onStartTrackingTouch(SeekBar arg0){}
                     @Override
-                    public void onProgressChanged(SeekBar arg0, int arg1, boolean arg2){}
+                    public void onProgressChanged(SeekBar arg0, int arg1, boolean arg2){
+                        tempoView.setText(Integer.toString(arg1 + tempoMin));
+                        tempTempo = arg1;
+                        //tempoSetter.setProgress(arg1 + tempoMin);
+                    }
                 });
 //                SeekBar volume = (SeekBar) findViewById(R.id.volumeseeker);
 
                 Button savedSettings = (Button) yourDialog.findViewById(R.id.setchanged);
-
+                savedSettings.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        tempo = tempTempo;
+                        yourDialog.dismiss();
+                    }
+                });
                 Button cancelSettings = (Button) yourDialog.findViewById(R.id.setcancel);
                 cancelSettings.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -434,7 +448,7 @@ public class MainActivity extends ActionBarActivity {
                 }
             }
             try{
-                Thread.sleep(60000 / (tempo * 4)); //tempo (bpm) is converted into milliseconds
+                Thread.sleep(60000 / ((tempo + tempoMin) * 4)); //tempo (bpm) is converted into milliseconds
             } catch(InterruptedException e){
                 System.out.println("Interrupted");
             }
