@@ -29,9 +29,9 @@ public class MainActivity extends ActionBarActivity {
 
     Context context = this;
     private int size = 16;
-    private int tempo = 120;
+    private int tempo = 40;
     private int tempTempo;
-    private int tempoMin = 60; //Needed for UI (Seekbar minimum value is always 0)
+    private int tempoMin = 80; //Needed for UI (Seekbar minimum value is always 0)
     private GridView gridView;
     private GridItemAdapter adapter;
 
@@ -202,7 +202,7 @@ public class MainActivity extends ActionBarActivity {
                 final TextView tempoView = (TextView) yourDialog.findViewById(R.id.currentTempo);
                 tempoView.setText(Integer.toString(tempo + tempoMin));
                 final SeekBar tempoSetter = (SeekBar)yourDialog.findViewById(R.id.temposeeker);
-                tempoSetter.setMax(300);
+                tempoSetter.setMax(80);
                 tempoSetter.setProgress(tempo + tempoMin);
 //                //Maybe add a global tempo holder
                 tempoSetter.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){
@@ -217,7 +217,6 @@ public class MainActivity extends ActionBarActivity {
                         //tempoSetter.setProgress(arg1 + tempoMin);
                     }
                 });
-//                SeekBar volume = (SeekBar) findViewById(R.id.volumeseeker);
 
                 Button savedSettings = (Button) yourDialog.findViewById(R.id.setchanged);
                 savedSettings.setOnClickListener(new View.OnClickListener() {
