@@ -190,6 +190,9 @@ public class MainActivity extends ActionBarActivity {
         settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                setPlaying(false);
+                play.setBackgroundResource(R.drawable.play1_no_border);
+
                 final Dialog yourDialog = new Dialog(context);
                 yourDialog.setContentView(R.layout.seekerdialog);
                 yourDialog.setTitle("Settings");
