@@ -4,7 +4,7 @@
  * Created by mju on 3/23/2015.
  */
 
-public final class BooleanGridModel extends Object {
+public final class BooleanGridModel {
 
     private final int width = 16;
     private final int height = 16;

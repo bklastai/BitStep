@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    android:background="@drawable/background4_2">
+    android:background="@drawable/grey_back1">
 
     <!-- Buttons on the left-->
     <LinearLayout
@@ -100,7 +100,8 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:textSize="40sp"
-                android:textColor="#0000ff"/>
+                android:textColor="#ffffff"
+                android:background="@drawable/index_back"/>
         </RelativeLayout>
         <Button
             android:id="@+id/add_gridview"
@@ -122,7 +123,7 @@
                 android:id="@+id/clear"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/clear1_no_border"
+                android:background="@drawable/clear1_simple"
                 android:layout_centerInParent="true"/>
         </RelativeLayout>
 

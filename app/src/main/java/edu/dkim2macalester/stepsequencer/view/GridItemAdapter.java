@@ -17,6 +17,7 @@ public class GridItemAdapter extends BaseAdapter{
 
     private int gridWidth = 16;
     private int gridHeight = 16;
+    private static int drumsetColor;
 
     private Integer[] values = new Integer[gridWidth*gridHeight];
 
@@ -65,7 +66,7 @@ public class GridItemAdapter extends BaseAdapter{
 
     public void initValues(){
         for (int i=0;i<gridHeight*gridWidth;i++){
-            this.values[i]= R.drawable.empty_square_white;
+            this.values[i]= R.drawable.index_back;
         }
     }
 

@@ -34,6 +34,7 @@ public class MainActivity extends ActionBarActivity {
     private Instrument instrument = new Instrument();
     private Song song = new Song();
     private BooleanGridModel BGM;
+    private static int drumsetColor;
 
     //DO NOT EVER EVER USE THIS VARIABLE. instead use methods isPlaying and setPlaying - for threadsafety reasons
     private boolean isPlaying = false; //flag to see whether or not the app is currently playing sound
@@ -44,6 +45,7 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         setContentView(R.layout.main_activity_layout);
+        drumsetColor = R.drawable.white_square_pink_filling;
 
         //Get model data
         BGM = song.getCurrentBGM();
@@ -60,20 +62,20 @@ public class MainActivity extends ActionBarActivity {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 if (!BGM.isSelected(position)) {
-                    v.setBackgroundResource(R.drawable.white_square_blue_filling);
-                    adapter.editDrawableID(position, R.drawable.white_square_blue_filling);
+                    v.setBackgroundResource(drumsetColor);
+                    adapter.editDrawableID(position, drumsetColor);
+                    //for playing sound on grid-cell-touch
+                    if (!muteActivated) {
+                        Sound s = (Sound) instrument.accessSoundArray().get(BGM.getSample(position));
+                        instrument.accessSoundPool().play(s.getSoundResourceId(), 1, 1, 3, 0, 1);
+                    }
                 } else {
-                    v.setBackgroundResource(R.drawable.empty_square_white);
-                    adapter.editDrawableID(position, R.drawable.empty_square_white);
+                    v.setBackgroundResource(R.drawable.index_back);
+                    adapter.editDrawableID(position, R.drawable.index_back);
                 }
                 BGM = new BooleanGridModel(BGM.getBooleanArray(), position);
                 song.setCurrentBGM(BGM); //updates song with new BGM
 
-                //for playing sound on grid-cell-touch
-                if (!muteActivated) {
-                    Sound s = (Sound) instrument.accessSoundArray().get(BGM.getSample(position));
-                    instrument.accessSoundPool().play(s.getSoundResourceId(), 1, 1, 3, 0, 1);
-                }
             }
         });
 
@@ -102,7 +104,7 @@ public class MainActivity extends ActionBarActivity {
             public void onClick(View v) {
                 if (!isPlaying()) {
                     BGM = song.getNextBGM();
-                    updateGridItemAdapter(BGM);
+                    updateAdapter_oneBGM(BGM);
                     fixNavIcons();
                     fixBGMIndexIndicator();
                 }
@@ -118,7 +120,7 @@ public class MainActivity extends ActionBarActivity {
             public void onClick(View v) {
                 if (!isPlaying()) {
                     BGM = song.getPreviousBGM();
-                    updateGridItemAdapter(BGM);
+                    updateAdapter_oneBGM(BGM);
                     fixNavIcons();
                     fixBGMIndexIndicator();
                 }
@@ -132,7 +134,7 @@ public class MainActivity extends ActionBarActivity {
             public void onClick(View v) {
                 if (!isPlaying()) {
                     BGM = song.addBGM();
-                    updateGridItemAdapter(BGM);
+                    updateAdapter_oneBGM(BGM);
                     fixNavIcons();
                     fixBGMIndexIndicator();
                 }
@@ -146,8 +148,8 @@ public class MainActivity extends ActionBarActivity {
             public void onClick(View v) {
 //                BGM = new BooleanGridModel();
 //                song.setCurrentBGM(BGM);
-//                updateGridItemAdapter(song.getCurrentBGM());
-                if (!song.isEmpty()||song.getBGMListSize()>1){
+//                updateAdapter_oneBGM(song.getCurrentBGM());
+                if (!song.isEmpty()){
                     setPlaying(false);
                     play.setBackgroundResource(R.drawable.play1_no_border);
                     confirmClear(v);
@@ -182,14 +184,14 @@ public class MainActivity extends ActionBarActivity {
 
 
         final TextView BGMIndex = (TextView) findViewById(R.id.BGMIndex);
-        BGMIndex.setText("1");
+        BGMIndex.setText("1/1");
 
 
     }
 
     public void fixBGMIndexIndicator(){
         TextView indexView = (TextView) findViewById(R.id.BGMIndex);
-        indexView.setText(""+(song.getCurrentBGMIndex()+1));
+        indexView.setText((song.getCurrentBGMIndex()+1)+"/"+song.getBGMListSize());
     }
 
     public void fixNavIcons(){
@@ -227,19 +229,18 @@ public class MainActivity extends ActionBarActivity {
                 .setTitle("Select a Drum Kit")
                 .setItems(new String[]{"808 Kit", "Kc Kit","Deep House Kit"}, new DialogInterface.OnClickListener(){
                     @Override
-                    public void onClick(DialogInterface dlg, int position)
-                    {
-                        if ( position == 0 )
-                        {
+                    public void onClick(DialogInterface dlg, int position) {
+                        if (position == 0) {
+                            drumsetColor = R.drawable.white_square_blue_filling;
                             instrument.load808Kit(MainActivity.this);
-                        }
-                        else if(position == 1){
+                        } else if (position == 1) {
+                            drumsetColor = R.drawable.white_square_green_filling;
                             instrument.loadKcKit(MainActivity.this);
-                        }
-                        else if(position == 2){
+                        } else if (position == 2) {
+                            drumsetColor = R.drawable.white_square_pink_filling;
                             instrument.loadDeepHouseKit(MainActivity.this);
                         }
-
+                        updateAdapter_allBGMs();
                     }
                 })
                 .create();
@@ -267,31 +268,38 @@ public class MainActivity extends ActionBarActivity {
                         if (position == 0) {
                             BGM = new BooleanGridModel();
                             song.setCurrentBGM(BGM);
-                            updateGridItemAdapter(song.getCurrentBGM());
+                            updateAdapter_oneBGM(song.getCurrentBGM());
                         } else if (position == 1) {
                             song = new Song();
                             BGM = new BooleanGridModel();
                             song.setCurrentBGM(BGM);
-                            updateGridItemAdapter(song.getCurrentBGM());
+                            updateAdapter_oneBGM(song.getCurrentBGM());
                             fixNavIcons();
                             fixBGMIndexIndicator();
                         }
 
                     }
                 })
-                .setNegativeButton("Cancel", null)
+                .setNegativeButton("Cancel",null)
                 .create();
         d.show();
     }
 
 
-    public void updateGridItemAdapter(BooleanGridModel bgm){
+    public void updateAdapter_allBGMs(){
+        for (int i = 0; i < song.getBGMListSize(); i++) {
+            BGM = song.getBGMByIndex(i);
+            updateAdapter_oneBGM(BGM);
+        }
+    }
+
+    public void updateAdapter_oneBGM(BooleanGridModel bgm){
         for (int i = 0; i < bgm.getBGMSize(); i++){
             if (bgm.isSelected(i)){
-                adapter.editDrawableID(i, R.drawable.white_square_blue_filling);
+                adapter.editDrawableID(i, drumsetColor);
             }
             else {
-                adapter.editDrawableID(i, R.drawable.empty_square_white);
+                adapter.editDrawableID(i, R.drawable.index_back);
             }
         }
         adapter.notifyDataSetChanged();
@@ -344,7 +352,7 @@ public class MainActivity extends ActionBarActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    updateGridItemAdapter(BGM);
+                    updateAdapter_oneBGM(BGM);
                 }
             });
         }
@@ -387,7 +395,7 @@ public class MainActivity extends ActionBarActivity {
                                     adapter.editDrawableID((j*size)+beatNum, R.drawable.grey_square_filled);
                                 }
                                 else {
-                                    adapter.editDrawableID(j*size+beatNum, R.drawable.empty_square_white);}
+                                    adapter.editDrawableID(j*size+beatNum, R.drawable.index_back);}
                             }
                         }
                         adapter.notifyDataSetChanged();
