@@ -3,6 +3,7 @@ package edu.dkim2macalester.stepsequencer.controller;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import edu.dkim2macalester.stepsequencer.R;
@@ -25,6 +27,7 @@ import edu.dkim2macalester.stepsequencer.view.GridItemAdapter;
 
 public class MainActivity extends ActionBarActivity {
 
+    Context context = this;
     private int size = 16;
     private int tempo = 120;
 
@@ -179,6 +182,42 @@ public class MainActivity extends ActionBarActivity {
                 setPlaying(false);
                 play.setBackgroundResource(R.drawable.play1_no_border);
                 showInstruments(v);
+            }
+        });
+
+        final Button settings = (Button) findViewById(R.id.music_options);
+        settings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final Dialog yourDialog = new Dialog(context);
+                yourDialog.setContentView(R.layout.seekerdialog);
+                yourDialog.setTitle("Settings");
+
+
+                //tempo seeker
+                SeekBar tempoSetter = (SeekBar)yourDialog.findViewById(R.id.temposeeker);
+                tempoSetter.setMax(300);
+//                //Maybe add a global tempo holder
+                tempoSetter.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){
+                    @Override
+                    public void onStopTrackingTouch(SeekBar arg0){}
+                    @Override
+                    public void onStartTrackingTouch(SeekBar arg0){}
+                    @Override
+                    public void onProgressChanged(SeekBar arg0, int arg1, boolean arg2){}
+                });
+//                SeekBar volume = (SeekBar) findViewById(R.id.volumeseeker);
+
+                Button savedSettings = (Button) yourDialog.findViewById(R.id.setchanged);
+
+                Button cancelSettings = (Button) yourDialog.findViewById(R.id.setcancel);
+                cancelSettings.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        yourDialog.dismiss();
+                    }
+                });
+                yourDialog.show();
             }
         });
 
