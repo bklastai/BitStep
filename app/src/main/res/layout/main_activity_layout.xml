@@ -7,7 +7,7 @@
 
     <!-- Buttons on the left-->
     <LinearLayout
-        android:id="@+id/button_holder"
+        android:id="@+id/button_holder0"
         android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="match_parent">
@@ -16,11 +16,12 @@
             android:layout_height="wrap_content"
             android:layout_weight="10">
             <Button
-                android:id="@+id/music_options"
+                android:id="@+id/music_settings"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/music_options1_no_border"
-                android:layout_gravity="center"/>
+                android:background="@drawable/music_options1"
+                android:layout_gravity="center"
+                android:onClick="onClickMusicSettings"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -30,8 +31,9 @@
                 android:id="@+id/instruments"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/instrument_options1_no_border"
-                android:layout_gravity="center"/>
+                android:background="@drawable/instrument_options1"
+                android:layout_gravity="center"
+                android:onClick="onClickInstruments"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -41,7 +43,9 @@
                 android:id="@+id/play"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"/>
+                android:layout_gravity="center"
+                android:background="@drawable/play1"
+                android:onClick="onClickPlay"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -51,29 +55,64 @@
                 android:id="@+id/mute"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"/>
+                android:layout_gravity="center"
+                android:background="@drawable/sound_active1"
+                android:onClick="onClickMute"/>
         </LinearLayout>
     </LinearLayout>
 
-    <!-- button to the previous gridview-->
+
+
+
+    <!-- button to upload songs, get previous gridview and save songs -->
+
     <RelativeLayout
+        android:id="@+id/button_holder1"
         android:orientation="vertical"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent">
-        <Button
-            android:id="@+id/previous_grid"
-            android:layout_width="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="100">
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/previous1_white"
-            android:layout_centerInParent="true"/>
+            android:layout_alignParentTop="true">
+            <Button
+                android:id="@+id/upload_grid"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/upload3"
+                android:layout_centerInParent="true"/>
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true">
+            <Button
+                android:id="@+id/previous_grid"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/previous1_white"
+                android:onClick="onClickPrevious"
+                android:layout_centerInParent="true"/>
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true">
+            <Button
+                android:id="@+id/save_grid"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/save3"
+                android:layout_centerInParent="true"/>
+        </RelativeLayout>
     </RelativeLayout>
 
     <!-- gridview-->
     <edu.dkim2macalester.stepsequencer.view.MySquareLayout
         android:id= "@+id/squareLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center">
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
         <GridView
             android:id="@+id/gridview"
             android:layout_width="wrap_content"
@@ -85,14 +124,16 @@
             android:layout_centerInParent="true"/>
     </edu.dkim2macalester.stepsequencer.view.MySquareLayout>
 
-    <!-- buttons to add, go the next, and clear. (the gridview)-->
+    <!-- buttons to add, go next, and clear/delete BGMs. -->
     <RelativeLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_weight="100">
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:layout_alignParentTop="true">
             <TextView
                 android:id="@+id/BGMIndex"
@@ -101,20 +142,29 @@
                 android:layout_centerInParent="true"
                 android:textSize="40sp"
                 android:textColor="#ffffff"
+                android:text="@string/init_index"
                 android:background="@drawable/white_frame"/>
         </RelativeLayout>
-        <Button
-            android:id="@+id/add_gridview"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/add1_simple"
-            android:layout_centerInParent="true"/>
-        <Button
-            android:id="@+id/next_grid"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/next1_white"
-            android:layout_centerInParent="true"/>
+            android:layout_centerInParent="true">
+            <Button
+                android:id="@+id/add_gridview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/add1_simple"
+                android:layout_centerInParent="true"
+                android:onClick="onClickAdd"/>
+            <Button
+                android:id="@+id/next_grid"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/next1_white"
+                android:layout_centerInParent="true"
+                android:onClick="onClickNext"
+                android:visibility="gone"/>
+        </RelativeLayout>
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -124,10 +174,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/clear1_simple"
-                android:layout_centerInParent="true"/>
+                android:layout_centerInParent="true"
+                android:onClick="onClickClear"/>
         </RelativeLayout>
-
     </RelativeLayout>
+
+
 
 
 

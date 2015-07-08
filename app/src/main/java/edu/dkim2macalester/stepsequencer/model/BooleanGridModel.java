@@ -20,6 +20,10 @@ public final class BooleanGridModel {
         selections = temp;
     }
 
+    public BooleanGridModel(boolean[] model){
+        selections = model;
+    }
+
     //constructs a class with the given boolean
     // array AND selects the grid at the
     // specified position (Song's current BGM is updated

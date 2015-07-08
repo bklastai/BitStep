@@ -7,7 +7,6 @@ import android.media.SoundPool;
 import java.util.ArrayList;
 
 import edu.dkim2macalester.stepsequencer.R;
-import edu.dkim2macalester.stepsequencer.controller.MainActivity;
 
 /**
  * Created by aronthomas on 4/30/15.
@@ -16,6 +15,7 @@ public class Instrument {
 
     private SoundPool soundPool;
     private ArrayList<Sound> mSounds = new ArrayList<>();
+    private int instrumentSelection;
 
     public void initiateSound (){
         soundPool = new SoundPool(16, AudioManager.STREAM_MUSIC, 0);
@@ -38,91 +38,93 @@ public class Instrument {
     public void load808Kit(Context context) {
 //        samples taken from http://hiphopmakers.com/free-808-drum-kit-227-samples
         reset();
+        instrumentSelection = 0;
 
         Sound s = new Sound();
         s.setDescription("kick");
-        s.setSoundResourceId(soundPool.load(context,R.raw.kick,3));
+        s.setSoundResourceId(soundPool.load(context, R.raw.kick, 3));
         mSounds.add(s);
 
         s = new Sound();
         s.setDescription("clap");
-        s.setSoundResourceId(soundPool.load(context,R.raw.clap,3));
+        s.setSoundResourceId(soundPool.load(context, R.raw.clap, 3));
         mSounds.add(s);
 
         s = new Sound();
         s.setDescription("snare");
-        s.setSoundResourceId(soundPool.load(context,R.raw.snare,3));
+        s.setSoundResourceId(soundPool.load(context, R.raw.snare, 3));
         mSounds.add(s);
 
         s = new Sound();
         s.setDescription("rim");
-        s.setSoundResourceId(soundPool.load(context,R.raw.rim,3));
+        s.setSoundResourceId(soundPool.load(context, R.raw.rim, 3));
         mSounds.add(s);
 
         s = new Sound();
         s.setDescription("cowbell");
-        s.setSoundResourceId(soundPool.load(context,R.raw.cowbell,3));
+        s.setSoundResourceId(soundPool.load(context, R.raw.cowbell, 3));
         mSounds.add(s);
 
         s = new Sound();
         s.setDescription("hh_closed");
-        s.setSoundResourceId(soundPool.load(context,R.raw.hhclosed,3));
+        s.setSoundResourceId(soundPool.load(context, R.raw.hhclosed, 3));
         mSounds.add(s);
 
         s = new Sound();
         s.setDescription("hh_open");
-        s.setSoundResourceId(soundPool.load(context,R.raw.hhopen,3));
+        s.setSoundResourceId(soundPool.load(context, R.raw.hhopen, 3));
         mSounds.add(s);
 
         s = new Sound();
         s.setDescription("conga_low");
-        s.setSoundResourceId(soundPool.load(context,R.raw.congalo,3));
+        s.setSoundResourceId(soundPool.load(context, R.raw.congalo, 3));
         mSounds.add(s);
 
         s = new Sound();
         s.setDescription("conga_med");
-        s.setSoundResourceId(soundPool.load(context,R.raw.congamed,3));
+        s.setSoundResourceId(soundPool.load(context, R.raw.congamed, 3));
         mSounds.add(s);
 
         s = new Sound();
         s.setDescription("conga_hi");
-        s.setSoundResourceId(soundPool.load(context,R.raw.congahi,3));
+        s.setSoundResourceId(soundPool.load(context, R.raw.congahi, 3));
         mSounds.add(s);
 
         s = new Sound();
         s.setDescription("tom_lo");
-        s.setSoundResourceId(soundPool.load(context,R.raw.tomlo,3));
+        s.setSoundResourceId(soundPool.load(context, R.raw.tomlo, 3));
         mSounds.add(s);
 
         s = new Sound();
         s.setDescription("tom_med");
-        s.setSoundResourceId(soundPool.load(context,R.raw.tommed,3));
+        s.setSoundResourceId(soundPool.load(context, R.raw.tommed, 3));
         mSounds.add(s);
 
         s = new Sound();
         s.setDescription("tom_hi");
-        s.setSoundResourceId(soundPool.load(context, R.raw.tomhi,3));
+        s.setSoundResourceId(soundPool.load(context, R.raw.tomhi, 3));
         mSounds.add(s);
 
         s = new Sound();
         s.setDescription("cymbal_1");
-        s.setSoundResourceId(soundPool.load(context, R.raw.cymbal1,3));
+        s.setSoundResourceId(soundPool.load(context, R.raw.cymbal1, 3));
         mSounds.add(s);
 
         s = new Sound();
         s.setDescription("cymbal_2");
-        s.setSoundResourceId(soundPool.load(context, R.raw.cymbal2,3));
+        s.setSoundResourceId(soundPool.load(context, R.raw.cymbal2, 3));
         mSounds.add(s);
 
         s = new Sound();
         s.setDescription("cymbal_3");
-        s.setSoundResourceId(soundPool.load(context, R.raw.cymbal3,3));
+        s.setSoundResourceId(soundPool.load(context, R.raw.cymbal3, 3));
         mSounds.add(s);
     }
 
     public void loadKcKit (Context context) {
 //        Samples taken from http://www.freesound.org/people/NoiseCollector/packs/161/
         reset();
+        instrumentSelection = 1;
 
         Sound s = new Sound();
         s.setDescription("kick");
@@ -209,6 +211,7 @@ public class Instrument {
     public void loadDeepHouseKit (Context context) {
 //        Samples taken from https://www.freesound.org/people/DWSD/packs/11575/
         reset();
+        instrumentSelection = 2;
 
         Sound s = new Sound();
         s.setDescription("kick");
@@ -290,5 +293,9 @@ public class Instrument {
         s.setDescription("ride");
         s.setSoundResourceId(soundPool.load(context, R.raw.dhride,3));
         mSounds.add(s);
+    }
+
+    public int getInstrumentSelection() {
+        return instrumentSelection;
     }
 }

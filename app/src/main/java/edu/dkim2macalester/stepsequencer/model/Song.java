@@ -15,13 +15,12 @@ public class Song {
 
 
     public Song(){
-        init();
+        BGMList.add(new BooleanGridModel());
     }
 
-    public BooleanGridModel addBGM(){
-        BGMList.add(new BooleanGridModel());
-        currentBGMIndex = getCurrentBGMIndex() + 1;
-        return BGMList.get(getCurrentBGMIndex());
+    public void addBGM(BooleanGridModel bgm){
+        BGMList.add(bgm);
+        currentBGMIndex++;
     }
 
     public boolean isEmpty(){
@@ -55,12 +54,6 @@ public class Song {
         else {
             return getCurrentBGM();
         }
-    }
-
-
-    private void init(){
-        BooleanGridModel bgm = new BooleanGridModel();
-        BGMList.add(bgm);
     }
 
     public BooleanGridModel getCurrentBGM(){
