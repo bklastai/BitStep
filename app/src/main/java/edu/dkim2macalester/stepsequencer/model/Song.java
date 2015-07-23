@@ -11,7 +11,7 @@ public class Song {
 
 
     private ArrayList<BooleanGridModel> BGMList = new ArrayList<>();
-    private int currentBGMIndex = 0;
+    private int currentBGMIndex = 0;//index starts at 0
 
 
     public Song(){

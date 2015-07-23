@@ -6,7 +6,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.View;
@@ -83,90 +82,46 @@ public class MainActivity extends Activity {
     }
 
 
-    @Override
-    protected void onPause(){
-        setPlaying(false);
-        super.onPause();
-    }
-
-    @Override
-    protected void onStop(){
-        setPlaying(false);
-        saveSharedPrefs(0);//to save current prefs
-        super.onStop();
-    }
-
-//    @Override
-//    protected void onDestroy(){
-//        setPlaying(false);
-//        saveSharedPrefs(0);//to save current prefs
-//        super.onDestroy();
-//    }
-
-    @Override
-    protected void onResume(){
-        super.onResume();
-        //Get current mode shared prefs (mode 0). returns array of booleans for
-        // bgm_list_size, silentMode, instrument and tempo selection.
-        //modes 1 through 10 correspond to the 10 savable songs.
-        //(savable song mode only returns song data, and leaves other prefs be...)
-        // mode 0 corresponds to new/latest song instance and/or UI preferences..
-        loadSharedPrefs();
-    }
-
-
     //HELPER METHODS
 
 
-    protected void loadSharedPrefs() {
-
-        SharedPreferences settings = context.getSharedPreferences(PREFS, MODE_PRIVATE);
-
-        //reset last song instance and other prefs
-        int songSize = settings.getInt(PREFS + "_bgm_list_size", 1);
-        boolean[] tempArray = new boolean[size*size];
-        song = new Song();
-        song.setCurrentBGMIndex(0);
-        for(int i=0;i<songSize;i++){
-            for(int j=0 ; j<tempArray.length; j++){
-                tempArray[j] = settings.getBoolean(PREFS + "_beat_" + i + "_" + j, false);
-            }
-            if (i>0 && i<5) {
-                song.addBGM(new BooleanGridModel(tempArray));
-            }
-            else {
-                song.setCurrentBGM(new BooleanGridModel(tempArray));
-            }
-        }
-        BGM = song.getCurrentBGM();
-        tempo = settings.getInt(PREFS + "_tempo", tempo);
-        muteActivated = settings.getBoolean(PREFS + "_silent_mode", muteActivated);
-
-        //switchInstrument statement includes updating adapter
-        switchInstrument(settings.getInt(PREFS + "_instrument", 2));//default: deep house kit
-        fixNavIcons();
-        fixBGMIndexIndicator();
+    public void loadSong(View v) {
+//        SharedPreferences settings = context.getSharedPreferences(PREFS, MODE_PRIVATE);
+//
+//        int songSize = settings.getInt(PREFS + "_bgm_list_size", 1);
+//        boolean[] tempArray = new boolean[size*size];
+//        song = new Song();
+//        for(int i=0; i<songSize; i++){
+//            for(int j=0 ; j<tempArray.length; j++){
+//                tempArray[j] = settings.getBoolean(PREFS + "_beat_" + i + "_" + j, false);
+//            }
+//            if (i!=0) {
+//                song.addBGM(new BooleanGridModel());
+//            }
+//            song.setCurrentBGM(new BooleanGridModel(tempArray));
+//            BGM = song.getCurrentBGM();
+//            updateAdapter_oneBGM(BGM);
+//        }
+//        switchInstrument(settings.getInt(PREFS + "_instrument", 2));//default: deep house kit
+//        fixNavIcons();
+//        fixBGMIndexIndicator();
     }
 
 
-    protected void saveSharedPrefs(int selection){
-        SharedPreferences settings = context.getSharedPreferences(PREFS, MODE_APPEND);
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putInt(PREFS + "_bgm_list_size", song.getBGMListSize());
-        boolean[] bgmArray;
-        for (int i = 0; i < song.getBGMListSize(); i++) {
-            BGM = song.getBGMByIndex(i);
-            bgmArray = BGM.getBooleanArray();
-            for (int j = 0; j < bgmArray.length; j++){
-                editor.putBoolean(PREFS + "_beat_" + i + "_" + j, bgmArray[j]);
-            }
-        }
-        if (selection == 0){
-            editor.putBoolean(PREFS + "_silent_mode", muteActivated);
-            editor.putInt(PREFS + "_instrument", instrument.getInstrumentSelection());
-            editor.putInt(PREFS + "_tempo", tempo);
-        }
-        editor.commit();
+    public void saveSong(View v){
+//        SharedPreferences settings = context.getSharedPreferences(PREFS, MODE_APPEND);
+//        SharedPreferences.Editor editor = settings.edit();
+//
+//        editor.putInt(PREFS + "_bgm_list_size", song.getBGMListSize());
+//        boolean[] bgmArray;
+//        for (int i = 0; i < song.getBGMListSize()-1; i++) {
+//            bgmArray = song.getBGMByIndex(i).getBooleanArray();
+//            for (int j = 0; j < bgmArray.length; j++){
+//                editor.putBoolean(PREFS + "_beat_" + i + "_" + j, bgmArray[j]);
+//            }
+//        }
+//        editor.putInt(PREFS + "_instrument", instrument.getInstrumentSelection());
+//        editor.commit();
     }
 
 
@@ -185,7 +140,6 @@ public class MainActivity extends Activity {
                 instrument.loadDeepHouseKit(MainActivity.this);
                 break;
         }
-        updateAdapter_allBGMs();
     }
 
 
@@ -227,8 +181,7 @@ public class MainActivity extends Activity {
 
     public void updateAdapter_allBGMs(){
         for (int i = 0; i < song.getBGMListSize(); i++) {
-            BGM = song.getBGMByIndex(i);
-            updateAdapter_oneBGM(BGM);
+            updateAdapter_oneBGM(song.getBGMByIndex(i));
         }
     }
 
