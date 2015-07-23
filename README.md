@@ -1,6 +1,5 @@
-# StepSequencer
-bitStep
-an Android app developed by Marcus Ulmer, Austin Kim, Benas Klastaitis and Aron Thomas for the comp-225 class.  
+# BitStep
+BitStep is an Android app developed by Benas Klastaitis, Marcus Ulmer, Aron Thomas and Austin Kim for the comp-225 class (Software Design And Development, Macalester College).  
 
 To run:
 Download Android Studio. Run. Supported for Studio version 1.1.0 and up.
